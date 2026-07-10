@@ -200,3 +200,6 @@ The ticker action log records all of the actions by date time for the user to se
 
 ---
 
+## Example Use Case
+
+https://youtu.be/E54KBRhn51o
