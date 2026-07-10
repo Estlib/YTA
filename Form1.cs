@@ -13,8 +13,10 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.  If not, see <https://gnu.org>.
 
+using FFMpegCore;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using YTA.Controllers;
@@ -156,9 +158,33 @@ namespace YTA
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
+                double duration = DurationCheck(dialog.FileName);
+                if (duration < 61 && (MediaType)cboxMediaType.SelectedItem != MediaType.Short)
+                {
+                    string title = "Infos";
+                    string message = $"Setting entry type to Short, as video is too short for a normal upload.";
+                    var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cboxMediaType.SelectedItem = MediaType.Short;
+                }
+                if (duration > 60 && (MediaType)cboxMediaType.SelectedItem != MediaType.Video)
+                {
+                    string title = "Infos";
+                    string message = $"Setting entry type to Video, as video is too long for a short.";
+                    var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cboxMediaType.SelectedItem = MediaType.Video;
+                }
+
+
                 tboxVideopath.Text = dialog.FileName;
             }
         }
+
+        private double DurationCheck(string fileName)
+        {
+            IMediaAnalysis mediaInfo = FFProbe.Analyse(fileName);
+            return (double)mediaInfo.Duration.TotalSeconds;
+        }
+
         private async void btnLogin_Click(object sender, EventArgs e)
         {
             try
@@ -451,16 +477,36 @@ namespace YTA
             }
             if (string.IsNullOrWhiteSpace(tboxDescription.Text))
             {
-                missingData += "○ Description is missing\n";
+                missingData += "○ Description is missing.\n";
+                dataPresence.Add(false);
+            }
+            else if(tboxDescription.Text.Count() > 5000)
+            {
+                missingData += "○ Description exceeds 5000 characters.\n";
                 dataPresence.Add(false);
             }
             else
             {
                 dataPresence.Add(true);
             }
-            if (string.IsNullOrWhiteSpace(tboxTags.Text) || tboxTags.Text.Length > 500)
+            if (string.IsNullOrWhiteSpace(tboxTags.Text))
             {
-                missingData += "○ Description is missing, or you have too many characters. (500 max)\n";
+                missingData += "○ No tags entered. (500 char limit)\n";
+                dataPresence.Add(false);
+            }
+            else if (tboxTags.Text.Length > 500)
+            {
+                missingData += "○ Too many characters used for tags. (500 max)\n";
+                dataPresence.Add(false);
+            }
+            else
+            {
+                dataPresence.Add(true);
+            }
+            var resultCat = cboxCategory.SelectedItem;
+            if (resultCat == null)
+            {
+                missingData += "○ Category not selected (Login needed to see categories)\n";
                 dataPresence.Add(false);
             }
             else
@@ -691,7 +737,13 @@ namespace YTA
 
         private void cboxPrivacy_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            if ((PrivacyType)cboxPrivacy.SelectedItem == PrivacyType.PublishAt)
+            {
+                string title = "Infos";
+                string message = $"Scheduling a scheduled youtube Video is not available at this time.";
+                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                cboxPrivacy.SelectedItem = PrivacyType.Private;
+            }
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -711,7 +763,21 @@ namespace YTA
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.microsoft.com");
+            ProcessStartInfo nav = new ProcessStartInfo() 
+            {FileName= "https://github.com/Estlib/YTA",
+            UseShellExecute = true};
+            Process.Start(nav);
+        }
+
+        private void cboxMediaType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if ((MediaType)cboxMediaType.SelectedItem == MediaType.Post)
+            {
+                string title = "Infos";
+                string message = $"Scheduling a youtube community post is not supported at this time.";
+                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                cboxMediaType.SelectedItem = MediaType.Video;
+            }
         }
     }
 }

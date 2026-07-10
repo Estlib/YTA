@@ -47,6 +47,8 @@ namespace YTA
             tabControl1 = new TabControl();
             loginTab = new TabPage();
             groupBox3 = new GroupBox();
+            linkLabel1 = new LinkLabel();
+            label15 = new Label();
             textBox1 = new TextBox();
             loggedInInfo = new GroupBox();
             channelViewCount = new Label();
@@ -119,8 +121,6 @@ namespace YTA
             richTextBox1 = new RichTextBox();
             uploadTicker = new System.Windows.Forms.Timer(components);
             trayIcon = new NotifyIcon(components);
-            label15 = new Label();
-            linkLabel1 = new LinkLabel();
             tabControl1.SuspendLayout();
             loginTab.SuspendLayout();
             groupBox3.SuspendLayout();
@@ -181,6 +181,27 @@ namespace YTA
             groupBox3.TabStop = false;
             groupBox3.Text = "Feature notes";
             // 
+            // linkLabel1
+            // 
+            linkLabel1.AutoSize = true;
+            linkLabel1.Location = new Point(240, 298);
+            linkLabel1.Name = "linkLabel1";
+            linkLabel1.Size = new Size(62, 15);
+            linkLabel1.TabIndex = 3;
+            linkLabel1.TabStop = true;
+            linkLabel1.Text = "Estlib 2026";
+            linkLabel1.TextAlign = ContentAlignment.TopRight;
+            linkLabel1.LinkClicked += linkLabel1_LinkClicked;
+            // 
+            // label15
+            // 
+            label15.AutoSize = true;
+            label15.Location = new Point(6, 298);
+            label15.Name = "label15";
+            label15.Size = new Size(79, 15);
+            label15.TabIndex = 1;
+            label15.Text = "Version: V1.01";
+            // 
             // textBox1
             // 
             textBox1.Location = new Point(6, 15);
@@ -220,7 +241,7 @@ namespace YTA
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(212, 100);
+            label5.Location = new Point(262, 100);
             label5.Name = "label5";
             label5.Size = new Size(84, 15);
             label5.TabIndex = 6;
@@ -230,7 +251,7 @@ namespace YTA
             // 
             channelTitleBig.AutoSize = true;
             channelTitleBig.Font = new Font("Segoe UI", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 186);
-            channelTitleBig.Location = new Point(6, 19);
+            channelTitleBig.Location = new Point(263, 22);
             channelTitleBig.Name = "channelTitleBig";
             channelTitleBig.Size = new Size(175, 37);
             channelTitleBig.TabIndex = 5;
@@ -248,7 +269,7 @@ namespace YTA
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(212, 85);
+            label4.Location = new Point(262, 85);
             label4.Name = "label4";
             label4.Size = new Size(42, 15);
             label4.TabIndex = 3;
@@ -266,7 +287,7 @@ namespace YTA
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(212, 70);
+            label3.Location = new Point(262, 70);
             label3.Name = "label3";
             label3.Size = new Size(67, 15);
             label3.TabIndex = 1;
@@ -274,9 +295,10 @@ namespace YTA
             // 
             // avatarBigImage
             // 
-            avatarBigImage.Location = new Point(6, 70);
+            avatarBigImage.Location = new Point(6, 22);
             avatarBigImage.Name = "avatarBigImage";
-            avatarBigImage.Size = new Size(200, 200);
+            avatarBigImage.Size = new Size(250, 250);
+            avatarBigImage.SizeMode = PictureBoxSizeMode.StretchImage;
             avatarBigImage.TabIndex = 0;
             avatarBigImage.TabStop = false;
             // 
@@ -557,6 +579,7 @@ namespace YTA
             cboxMediaType.Size = new Size(121, 23);
             cboxMediaType.TabIndex = 0;
             cboxMediaType.Text = "Select media type";
+            cboxMediaType.SelectedIndexChanged += cboxMediaType_SelectedIndexChanged;
             // 
             // entriesTab
             // 
@@ -918,27 +941,6 @@ namespace YTA
             trayIcon.Visible = true;
             trayIcon.DoubleClick += trayIcon_DoubleClick;
             // 
-            // label15
-            // 
-            label15.AutoSize = true;
-            label15.Location = new Point(6, 298);
-            label15.Name = "label15";
-            label15.Size = new Size(73, 15);
-            label15.TabIndex = 1;
-            label15.Text = "Version: V1.0";
-            // 
-            // linkLabel1
-            // 
-            linkLabel1.AutoSize = true;
-            linkLabel1.Location = new Point(240, 298);
-            linkLabel1.Name = "linkLabel1";
-            linkLabel1.Size = new Size(62, 15);
-            linkLabel1.TabIndex = 3;
-            linkLabel1.TabStop = true;
-            linkLabel1.Text = "Estlib 2026";
-            linkLabel1.TextAlign = ContentAlignment.TopRight;
-            linkLabel1.LinkClicked += linkLabel1_LinkClicked;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -946,7 +948,9 @@ namespace YTA
             ClientSize = new Size(800, 450);
             Controls.Add(tabControl1);
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
             Name = "Form1";
+            SizeGripStyle = SizeGripStyle.Hide;
             Text = "YTA - Youtube Template Advancer";
             FormClosing += Form1_FormClosing;
             Load += Form1_Load;
