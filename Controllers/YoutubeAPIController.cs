@@ -227,21 +227,39 @@ namespace YTA.Controllers
         }
         public async Task<List<YTcategory>> GetCategories(string regionCode = "EE")
         {
-            YouTubeService ytServ = await GetYouTubeServiceAsync();
-            var req = ytServ.VideoCategories.List("snippet");
-            req.RegionCode = regionCode;
+            try
+            {
+                YouTubeService ytServ = await GetYouTubeServiceAsync();
+                var req = ytServ.VideoCategories.List("snippet");
+                req.RegionCode = regionCode;
 
-            var res = await req.ExecuteAsync();
+                var res = await req.ExecuteAsync();
 
-            List<YTcategory> categories = res.Items.Where(x => x.Snippet.Assignable == true)
-                .Select(x => new YTcategory
-                {
-                    ID = x.Id,
-                    Name = x.Snippet.Title
-                })
-                .OrderBy(x => x.Name)
-                .ToList();
-            return categories;
+                List<YTcategory> categories = res.Items.Where(x => x.Snippet.Assignable == true)
+                    .Select(x => new YTcategory
+                    {
+                        ID = x.Id,
+                        Name = x.Snippet.Title
+                    })
+                    .OrderBy(x => x.Name)
+                    .ToList();
+                return categories;
+            }
+            catch (TaskCanceledException tx)
+            {
+                string title = "Warning";
+                string message = $"Task was cancelled, see why\n\n{tx.Message}";
+                var result2 = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                string title = "Error";
+                string message = $"Retreiving categories has failed, see why\n\n{ex.Message}";
+                var result2 = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                throw;
+            }
+            
         }
     }
 }

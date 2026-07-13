@@ -70,6 +70,13 @@ namespace YTA
             label1 = new Label();
             scheduleCalendar = new MonthCalendar();
             newEntryTab = new TabPage();
+            label18 = new Label();
+            comboBox1 = new ComboBox();
+            button4 = new Button();
+            textBox2 = new TextBox();
+            label17 = new Label();
+            label16 = new Label();
+            flowLayoutPanel1 = new FlowLayoutPanel();
             cboxCategory = new ComboBox();
             btnAddEntry = new Button();
             dateTimePicker1 = new DateTimePicker();
@@ -86,6 +93,12 @@ namespace YTA
             btnFileBrowser = new Button();
             tboxVideopath = new TextBox();
             cboxMediaType = new ComboBox();
+            prefabTab = new TabPage();
+            tabControl2 = new TabControl();
+            infoTab = new TabPage();
+            richTextBox2 = new RichTextBox();
+            newPrefab = new TabPage();
+            managePrefabTab = new TabPage();
             entriesTab = new TabPage();
             btnDeleteRow = new Button();
             btnUploadNow = new Button();
@@ -129,6 +142,9 @@ namespace YTA
             calendarTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)selectionThumbnail).BeginInit();
             newEntryTab.SuspendLayout();
+            prefabTab.SuspendLayout();
+            tabControl2.SuspendLayout();
+            infoTab.SuspendLayout();
             entriesTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataEntryDisplay).BeginInit();
             tickerConf.SuspendLayout();
@@ -143,6 +159,7 @@ namespace YTA
             tabControl1.Controls.Add(loginTab);
             tabControl1.Controls.Add(calendarTab);
             tabControl1.Controls.Add(newEntryTab);
+            tabControl1.Controls.Add(prefabTab);
             tabControl1.Controls.Add(entriesTab);
             tabControl1.Controls.Add(tickerConf);
             tabControl1.Controls.Add(aboutTab);
@@ -200,7 +217,7 @@ namespace YTA
             label15.Name = "label15";
             label15.Size = new Size(79, 15);
             label15.TabIndex = 1;
-            label15.Text = "Version: V1.01";
+            label15.Text = "Version: V1.02";
             // 
             // textBox1
             // 
@@ -227,7 +244,7 @@ namespace YTA
             loggedInInfo.Size = new Size(444, 386);
             loggedInInfo.TabIndex = 5;
             loggedInInfo.TabStop = false;
-            loggedInInfo.Text = "loggedInInfo";
+            loggedInInfo.Text = "S";
             // 
             // channelViewCount
             // 
@@ -237,6 +254,7 @@ namespace YTA
             channelViewCount.Size = new Size(38, 15);
             channelViewCount.TabIndex = 7;
             channelViewCount.Text = "count";
+            channelViewCount.TextAlign = ContentAlignment.TopRight;
             // 
             // label5
             // 
@@ -251,7 +269,7 @@ namespace YTA
             // 
             channelTitleBig.AutoSize = true;
             channelTitleBig.Font = new Font("Segoe UI", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 186);
-            channelTitleBig.Location = new Point(263, 22);
+            channelTitleBig.Location = new Point(6, 19);
             channelTitleBig.Name = "channelTitleBig";
             channelTitleBig.Size = new Size(175, 37);
             channelTitleBig.TabIndex = 5;
@@ -265,6 +283,7 @@ namespace YTA
             videoCount.Size = new Size(38, 15);
             videoCount.TabIndex = 4;
             videoCount.Text = "count";
+            videoCount.TextAlign = ContentAlignment.TopRight;
             // 
             // label4
             // 
@@ -283,6 +302,7 @@ namespace YTA
             subCount.Size = new Size(38, 15);
             subCount.TabIndex = 2;
             subCount.Text = "count";
+            subCount.TextAlign = ContentAlignment.TopRight;
             // 
             // label3
             // 
@@ -295,7 +315,7 @@ namespace YTA
             // 
             // avatarBigImage
             // 
-            avatarBigImage.Location = new Point(6, 22);
+            avatarBigImage.Location = new Point(6, 70);
             avatarBigImage.Name = "avatarBigImage";
             avatarBigImage.Size = new Size(250, 250);
             avatarBigImage.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -403,6 +423,13 @@ namespace YTA
             // 
             // newEntryTab
             // 
+            newEntryTab.Controls.Add(label18);
+            newEntryTab.Controls.Add(comboBox1);
+            newEntryTab.Controls.Add(button4);
+            newEntryTab.Controls.Add(textBox2);
+            newEntryTab.Controls.Add(label17);
+            newEntryTab.Controls.Add(label16);
+            newEntryTab.Controls.Add(flowLayoutPanel1);
             newEntryTab.Controls.Add(cboxCategory);
             newEntryTab.Controls.Add(btnAddEntry);
             newEntryTab.Controls.Add(dateTimePicker1);
@@ -425,6 +452,67 @@ namespace YTA
             newEntryTab.TabIndex = 2;
             newEntryTab.Text = "Add entry";
             newEntryTab.UseVisualStyleBackColor = true;
+            // 
+            // label18
+            // 
+            label18.AutoSize = true;
+            label18.Location = new Point(387, 326);
+            label18.Name = "label18";
+            label18.Size = new Size(78, 15);
+            label18.TabIndex = 23;
+            label18.Text = "Select Prefab:";
+            // 
+            // comboBox1
+            // 
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Location = new Point(388, 344);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(200, 23);
+            comboBox1.TabIndex = 22;
+            // 
+            // button4
+            // 
+            button4.Enabled = false;
+            button4.Location = new Point(723, 3);
+            button4.Name = "button4";
+            button4.Size = new Size(42, 23);
+            button4.TabIndex = 21;
+            button4.Text = "???";
+            button4.UseVisualStyleBackColor = true;
+            // 
+            // textBox2
+            // 
+            textBox2.Enabled = false;
+            textBox2.Location = new Point(505, 3);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(212, 23);
+            textBox2.TabIndex = 20;
+            // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Location = new Point(298, 6);
+            label17.Name = "label17";
+            label17.Size = new Size(101, 15);
+            label17.TabIndex = 19;
+            label17.Text = "Add to playlists ▼";
+            // 
+            // label16
+            // 
+            label16.AutoSize = true;
+            label16.Location = new Point(408, 6);
+            label16.Name = "label16";
+            label16.Size = new Size(91, 15);
+            label16.TabIndex = 18;
+            label16.Text = "End screen ID →";
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.Enabled = false;
+            flowLayoutPanel1.Location = new Point(298, 32);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(467, 110);
+            flowLayoutPanel1.TabIndex = 17;
             // 
             // cboxCategory
             // 
@@ -449,15 +537,16 @@ namespace YTA
             // 
             dateTimePicker1.CustomFormat = "yyyy-MM-dd HH:mm";
             dateTimePicker1.Format = DateTimePickerFormat.Custom;
-            dateTimePicker1.Location = new Point(298, 80);
+            dateTimePicker1.Location = new Point(388, 300);
             dateTimePicker1.Name = "dateTimePicker1";
             dateTimePicker1.Size = new Size(200, 23);
             dateTimePicker1.TabIndex = 14;
+            dateTimePicker1.ValueChanged += dateTimePicker1_ValueChanged;
             // 
             // tickProduct
             // 
             tickProduct.AutoSize = true;
-            tickProduct.Location = new Point(298, 55);
+            tickProduct.Location = new Point(594, 340);
             tickProduct.Name = "tickProduct";
             tickProduct.Size = new Size(167, 19);
             tickProduct.TabIndex = 13;
@@ -467,7 +556,7 @@ namespace YTA
             // tickRobot
             // 
             tickRobot.AutoSize = true;
-            tickRobot.Location = new Point(298, 30);
+            tickRobot.Location = new Point(594, 320);
             tickRobot.Name = "tickRobot";
             tickRobot.Size = new Size(129, 19);
             tickRobot.TabIndex = 12;
@@ -477,7 +566,7 @@ namespace YTA
             // tickChild
             // 
             tickChild.AutoSize = true;
-            tickChild.Location = new Point(298, 5);
+            tickChild.Location = new Point(594, 300);
             tickChild.Name = "tickChild";
             tickChild.Size = new Size(81, 19);
             tickChild.TabIndex = 11;
@@ -511,7 +600,7 @@ namespace YTA
             tboxTags.Name = "tboxTags";
             tboxTags.PlaceholderText = "video tags, separate with comma, space is not a separator";
             tboxTags.ScrollBars = ScrollBars.Vertical;
-            tboxTags.Size = new Size(289, 95);
+            tboxTags.Size = new Size(378, 95);
             tboxTags.TabIndex = 7;
             // 
             // tboxDescription
@@ -522,7 +611,7 @@ namespace YTA
             tboxDescription.Name = "tboxDescription";
             tboxDescription.PlaceholderText = "explain what you've done";
             tboxDescription.ScrollBars = ScrollBars.Vertical;
-            tboxDescription.Size = new Size(289, 146);
+            tboxDescription.Size = new Size(762, 146);
             tboxDescription.TabIndex = 6;
             tboxDescription.TextChanged += tboxDescription_TextChanged;
             // 
@@ -580,6 +669,65 @@ namespace YTA
             cboxMediaType.TabIndex = 0;
             cboxMediaType.Text = "Select media type";
             cboxMediaType.SelectedIndexChanged += cboxMediaType_SelectedIndexChanged;
+            // 
+            // prefabTab
+            // 
+            prefabTab.Controls.Add(tabControl2);
+            prefabTab.Location = new Point(4, 24);
+            prefabTab.Name = "prefabTab";
+            prefabTab.Size = new Size(768, 398);
+            prefabTab.TabIndex = 6;
+            prefabTab.Text = "Entry Prefabs";
+            prefabTab.UseVisualStyleBackColor = true;
+            // 
+            // tabControl2
+            // 
+            tabControl2.Controls.Add(infoTab);
+            tabControl2.Controls.Add(newPrefab);
+            tabControl2.Controls.Add(managePrefabTab);
+            tabControl2.Location = new Point(3, 3);
+            tabControl2.Name = "tabControl2";
+            tabControl2.SelectedIndex = 0;
+            tabControl2.Size = new Size(762, 392);
+            tabControl2.TabIndex = 0;
+            // 
+            // infoTab
+            // 
+            infoTab.Controls.Add(richTextBox2);
+            infoTab.Location = new Point(4, 24);
+            infoTab.Name = "infoTab";
+            infoTab.Padding = new Padding(3);
+            infoTab.Size = new Size(754, 364);
+            infoTab.TabIndex = 0;
+            infoTab.Text = "Info";
+            infoTab.UseVisualStyleBackColor = true;
+            // 
+            // richTextBox2
+            // 
+            richTextBox2.Location = new Point(6, 6);
+            richTextBox2.Name = "richTextBox2";
+            richTextBox2.Size = new Size(742, 352);
+            richTextBox2.TabIndex = 0;
+            richTextBox2.Text = resources.GetString("richTextBox2.Text");
+            // 
+            // newPrefab
+            // 
+            newPrefab.Location = new Point(4, 24);
+            newPrefab.Name = "newPrefab";
+            newPrefab.Padding = new Padding(3);
+            newPrefab.Size = new Size(754, 364);
+            newPrefab.TabIndex = 1;
+            newPrefab.Text = "Prefab Editor";
+            newPrefab.UseVisualStyleBackColor = true;
+            // 
+            // managePrefabTab
+            // 
+            managePrefabTab.Location = new Point(4, 24);
+            managePrefabTab.Name = "managePrefabTab";
+            managePrefabTab.Size = new Size(754, 364);
+            managePrefabTab.TabIndex = 2;
+            managePrefabTab.Text = "Manage Prefabs";
+            managePrefabTab.UseVisualStyleBackColor = true;
             // 
             // entriesTab
             // 
@@ -951,7 +1099,7 @@ namespace YTA
             MaximizeBox = false;
             Name = "Form1";
             SizeGripStyle = SizeGripStyle.Hide;
-            Text = "YTA - Youtube Template Advancer";
+            Text = "YTA - Youtube Transfer Assistant";
             FormClosing += Form1_FormClosing;
             Load += Form1_Load;
             Resize += Form1_Resize;
@@ -968,6 +1116,9 @@ namespace YTA
             ((System.ComponentModel.ISupportInitialize)selectionThumbnail).EndInit();
             newEntryTab.ResumeLayout(false);
             newEntryTab.PerformLayout();
+            prefabTab.ResumeLayout(false);
+            tabControl2.ResumeLayout(false);
+            infoTab.ResumeLayout(false);
             entriesTab.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataEntryDisplay).EndInit();
             tickerConf.ResumeLayout(false);
@@ -1060,5 +1211,18 @@ namespace YTA
         private ComboBox cboxCategory;
         private Label label15;
         private LinkLabel linkLabel1;
+        private Label label16;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private Button button4;
+        private TextBox textBox2;
+        private Label label17;
+        private Label label18;
+        private ComboBox comboBox1;
+        private TabPage prefabTab;
+        private TabControl tabControl2;
+        private TabPage infoTab;
+        private TabPage newPrefab;
+        private TabPage managePrefabTab;
+        private RichTextBox richTextBox2;
     }
 }

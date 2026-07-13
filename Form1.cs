@@ -480,7 +480,7 @@ namespace YTA
                 missingData += "○ Description is missing.\n";
                 dataPresence.Add(false);
             }
-            else if(tboxDescription.Text.Count() > 5000)
+            else if (tboxDescription.Text.Count() > 5000)
             {
                 missingData += "○ Description exceeds 5000 characters.\n";
                 dataPresence.Add(false);
@@ -763,9 +763,11 @@ namespace YTA
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            ProcessStartInfo nav = new ProcessStartInfo() 
-            {FileName= "https://github.com/Estlib/YTA",
-            UseShellExecute = true};
+            ProcessStartInfo nav = new ProcessStartInfo()
+            {
+                FileName = "https://github.com/Estlib/YTA",
+                UseShellExecute = true
+            };
             Process.Start(nav);
         }
 
@@ -778,6 +780,11 @@ namespace YTA
                 var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 cboxMediaType.SelectedItem = MediaType.Video;
             }
+        }
+
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

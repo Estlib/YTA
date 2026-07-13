@@ -130,6 +130,26 @@
 
 </value>
   </data>
+  <data name="richTextBox2.Text" xml:space="preserve">
+    <value>Prefabs work kinda like upload defaults. They are essentially some presaved entry data that has been configured ahead of time, by the 
+app operator (YOU) in order to save time on creating entries. Except unlike on youtube, you get to have multiple different ones, if you 
+have multiple different types of content to do.
+
+How to use this mini-editor-in-editor:
+
+- Go to "Prefab editor", fill out the info that you want to have selectable. Unlike when creating an entry, everything here can be empty.
+
+- Save your prefab under a specific name.
+
+- Select a prefab on the "Add entry" tab from the prefab combobox
+
+Note: Prefabs do not allow you to set the video file location nor the thumbnail location. Aswell as using a prefab after filling those 
+fields WILL clear those fields again.
+
+- To delete or see prefab info, go to manage prefabs.
+
+- To modify an existing one, select a prefab at the top of the prefab editor.</value>
+  </data>
   <data name="richTextBox1.Text" xml:space="preserve">
     <value>Hi, I am a YouTuber, who needed tools to assist in a mostly solo journey.
 
