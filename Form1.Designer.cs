@@ -65,7 +65,6 @@ namespace YTA
             btnLogin = new Button();
             calendarTab = new TabPage();
             btnRefreshCalendar = new Button();
-            selectionThumbnail = new PictureBox();
             scheduledEntries = new FlowLayoutPanel();
             label1 = new Label();
             scheduleCalendar = new MonthCalendar();
@@ -76,7 +75,7 @@ namespace YTA
             textBox2 = new TextBox();
             label17 = new Label();
             label16 = new Label();
-            flowLayoutPanel1 = new FlowLayoutPanel();
+            fboxPlaylists = new FlowLayoutPanel();
             cboxCategory = new ComboBox();
             btnAddEntry = new Button();
             dateTimePicker1 = new DateTimePicker();
@@ -140,7 +139,6 @@ namespace YTA
             loggedInInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)avatarBigImage).BeginInit();
             calendarTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)selectionThumbnail).BeginInit();
             newEntryTab.SuspendLayout();
             prefabTab.SuspendLayout();
             tabControl2.SuspendLayout();
@@ -244,7 +242,7 @@ namespace YTA
             loggedInInfo.Size = new Size(444, 386);
             loggedInInfo.TabIndex = 5;
             loggedInInfo.TabStop = false;
-            loggedInInfo.Text = "S";
+            loggedInInfo.Text = "User info";
             // 
             // channelViewCount
             // 
@@ -365,7 +363,6 @@ namespace YTA
             // calendarTab
             // 
             calendarTab.Controls.Add(btnRefreshCalendar);
-            calendarTab.Controls.Add(selectionThumbnail);
             calendarTab.Controls.Add(scheduledEntries);
             calendarTab.Controls.Add(label1);
             calendarTab.Controls.Add(scheduleCalendar);
@@ -379,7 +376,7 @@ namespace YTA
             // 
             // btnRefreshCalendar
             // 
-            btnRefreshCalendar.Location = new Point(9, 201);
+            btnRefreshCalendar.Location = new Point(9, 369);
             btnRefreshCalendar.Name = "btnRefreshCalendar";
             btnRefreshCalendar.Size = new Size(157, 23);
             btnRefreshCalendar.TabIndex = 4;
@@ -387,28 +384,18 @@ namespace YTA
             btnRefreshCalendar.UseVisualStyleBackColor = true;
             btnRefreshCalendar.Click += btnRefreshCalendar_Click;
             // 
-            // selectionThumbnail
-            // 
-            selectionThumbnail.BorderStyle = BorderStyle.FixedSingle;
-            selectionThumbnail.Location = new Point(9, 242);
-            selectionThumbnail.Name = "selectionThumbnail";
-            selectionThumbnail.Size = new Size(236, 150);
-            selectionThumbnail.SizeMode = PictureBoxSizeMode.Zoom;
-            selectionThumbnail.TabIndex = 3;
-            selectionThumbnail.TabStop = false;
-            // 
             // scheduledEntries
             // 
             scheduledEntries.AutoScroll = true;
-            scheduledEntries.Location = new Point(251, 27);
+            scheduledEntries.Location = new Point(172, 6);
             scheduledEntries.Name = "scheduledEntries";
-            scheduledEntries.Size = new Size(511, 365);
+            scheduledEntries.Size = new Size(590, 386);
             scheduledEntries.TabIndex = 2;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(6, 3);
+            label1.Location = new Point(9, 6);
             label1.Name = "label1";
             label1.Size = new Size(63, 15);
             label1.TabIndex = 1;
@@ -416,6 +403,7 @@ namespace YTA
             // 
             // scheduleCalendar
             // 
+            scheduleCalendar.CalendarDimensions = new Size(1, 2);
             scheduleCalendar.Location = new Point(9, 27);
             scheduleCalendar.Name = "scheduleCalendar";
             scheduleCalendar.TabIndex = 0;
@@ -429,7 +417,7 @@ namespace YTA
             newEntryTab.Controls.Add(textBox2);
             newEntryTab.Controls.Add(label17);
             newEntryTab.Controls.Add(label16);
-            newEntryTab.Controls.Add(flowLayoutPanel1);
+            newEntryTab.Controls.Add(fboxPlaylists);
             newEntryTab.Controls.Add(cboxCategory);
             newEntryTab.Controls.Add(btnAddEntry);
             newEntryTab.Controls.Add(dateTimePicker1);
@@ -464,6 +452,7 @@ namespace YTA
             // 
             // comboBox1
             // 
+            comboBox1.Enabled = false;
             comboBox1.FormattingEnabled = true;
             comboBox1.Location = new Point(388, 344);
             comboBox1.Name = "comboBox1";
@@ -506,13 +495,13 @@ namespace YTA
             label16.TabIndex = 18;
             label16.Text = "End screen ID →";
             // 
-            // flowLayoutPanel1
+            // fboxPlaylists
             // 
-            flowLayoutPanel1.Enabled = false;
-            flowLayoutPanel1.Location = new Point(298, 32);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(467, 110);
-            flowLayoutPanel1.TabIndex = 17;
+            fboxPlaylists.AutoScroll = true;
+            fboxPlaylists.Location = new Point(298, 32);
+            fboxPlaylists.Name = "fboxPlaylists";
+            fboxPlaylists.Size = new Size(467, 110);
+            fboxPlaylists.TabIndex = 17;
             // 
             // cboxCategory
             // 
@@ -1113,7 +1102,6 @@ namespace YTA
             ((System.ComponentModel.ISupportInitialize)avatarBigImage).EndInit();
             calendarTab.ResumeLayout(false);
             calendarTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)selectionThumbnail).EndInit();
             newEntryTab.ResumeLayout(false);
             newEntryTab.PerformLayout();
             prefabTab.ResumeLayout(false);
@@ -1147,7 +1135,6 @@ namespace YTA
         private Label label1;
         private MonthCalendar scheduleCalendar;
         private Button btnRefreshCalendar;
-        private PictureBox selectionThumbnail;
         private Button btnImageBrowser;
         private TextBox tboxImagepath;
         private Button btnFileBrowser;
@@ -1212,7 +1199,7 @@ namespace YTA
         private Label label15;
         private LinkLabel linkLabel1;
         private Label label16;
-        private FlowLayoutPanel flowLayoutPanel1;
+        private FlowLayoutPanel fboxPlaylists;
         private Button button4;
         private TextBox textBox2;
         private Label label17;

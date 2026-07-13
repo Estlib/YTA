@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace YTA.DBDomain.Models
 {
-    public class YTcategory
+    public class YTCategory
     {
         public string ID { get; set; }
         public string Name { get; set; }

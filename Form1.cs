@@ -204,7 +204,7 @@ namespace YTA
                 LoadChannelThumbnail(channelInfo.AvatarLink);
                 labelIsLoggedIn.Text = "Login success";
                 GetYTCategories();
-            }
+                GetUserLists();            }
             catch (Exception ex)
             {
 
@@ -711,13 +711,94 @@ namespace YTA
             {
                 GetDataFromDB();
                 GetYTCategories();
+                GetUserLists();
             }
+        }
+
+        private async Task GetUserLists()
+        {
+            try
+            {
+                List<YTPlaylist> myLists = await _youtubeAPIController.GetLists();
+                fboxPlaylists.Controls.Clear();
+
+                foreach (var list in myLists)
+                {
+                    Control card = ListCard(list);
+                    fboxPlaylists.Controls.Add(card);
+                }
+            }
+            catch (Exception ex)
+            {
+                string title = "Error";
+                string message = $"idk wat de fuk wrong, lookie:\n\n{ex.Message}";
+                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private Control ListCard(YTPlaylist playlist)
+        {
+            //this is all clanker code
+
+            Panel card = new Panel();
+            card.Width = 140;
+            card.Height = 100;
+            card.Margin = new Padding(5);
+            card.BorderStyle = BorderStyle.FixedSingle;
+            card.Tag = playlist;
+
+            // tickbox, top-left
+            CheckBox tick = new CheckBox();
+            tick.Left = 3;
+            tick.Top = 3;
+            tick.Width = 15;
+            tick.Height = 15;
+            tick.Tag = playlist;
+
+            // red area: playlist name
+            Label name = new Label();
+            name.Left = 20;
+            name.Top = 2;
+            name.Width = 115;
+            name.Height = 18;
+            name.Text = playlist.ListName;
+            name.AutoEllipsis = true;
+
+            // green area: thumbnail
+            PictureBox thumbnail = new PictureBox();
+            thumbnail.Left = 5;
+            thumbnail.Top = 23;
+            thumbnail.Width = 130;
+            thumbnail.Height = 60;
+            thumbnail.SizeMode = PictureBoxSizeMode.Zoom;
+            thumbnail.BorderStyle = BorderStyle.FixedSingle;
+
+            if (!string.IsNullOrWhiteSpace(playlist.ListThumbLink))
+            {
+                thumbnail.LoadAsync(playlist.ListThumbLink);
+            }
+
+            // blue area: item count bottom-right
+            Label count = new Label();
+            count.Left = 98;
+            count.Top = 82;
+            count.Width = 37;
+            count.Height = 15;
+            count.TextAlign = ContentAlignment.MiddleRight;
+            count.Text = (playlist.ListVideoCount ?? 0).ToString();
+
+            card.Controls.Add(tick);
+            card.Controls.Add(name);
+            card.Controls.Add(thumbnail);
+            card.Controls.Add(count);
+
+            return card;
         }
 
         private async void GetYTCategories()
         {
             //full metal clanker
-            List<YTcategory> categories =
+            List<YTCategory> categories =
             await _youtubeAPIController.GetCategories("EE");
 
             cboxCategory.DisplayMember = "Name";

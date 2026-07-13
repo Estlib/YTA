@@ -26,7 +26,7 @@ namespace YTA.DBDomain.Models
     }
     public enum PrivacyType
     {
-        Private,PublishAt,Unlisted,Public
+        Private,PublishAt,Unlisted,Public,Undefined
     }
     public class YTContent
     {

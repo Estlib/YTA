@@ -206,7 +206,7 @@ namespace YTA.Controllers
                     var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
             }
-            using FileStream fileStream = new FileStream(filepath,FileMode.Open,FileAccess.Read);
+            using FileStream fileStream = new FileStream(filepath, FileMode.Open, FileAccess.Read);
             var thumbReq = ytServ.Thumbnails.Set(videoID, fileStream, whatFileType);
             IUploadProgress progress = await thumbReq.UploadAsync();
             if (progress.Status == UploadStatus.Failed)
@@ -225,41 +225,109 @@ namespace YTA.Controllers
             string message = "Token erased, Need to verify credentials with google again.";
             var result2 = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-        public async Task<List<YTcategory>> GetCategories(string regionCode = "EE")
+        public async Task<List<YTCategory>> GetCategories(string regionCode = "EE")
         {
+            YouTubeService ytServ = await GetYouTubeServiceAsync();
+            var req = ytServ.VideoCategories.List("snippet");
+            req.RegionCode = regionCode;
+
+            List<YTCategory> categories = new List<YTCategory>();
             try
             {
-                YouTubeService ytServ = await GetYouTubeServiceAsync();
-                var req = ytServ.VideoCategories.List("snippet");
-                req.RegionCode = regionCode;
 
                 var res = await req.ExecuteAsync();
-
-                List<YTcategory> categories = res.Items.Where(x => x.Snippet.Assignable == true)
-                    .Select(x => new YTcategory
+                categories = res.Items.Where(x => x.Snippet.Assignable == true)
+                    .Select(x => new YTCategory
                     {
                         ID = x.Id,
                         Name = x.Snippet.Title
                     })
                     .OrderBy(x => x.Name)
                     .ToList();
-                return categories;
+                
             }
             catch (TaskCanceledException tx)
             {
                 string title = "Warning";
                 string message = $"Task was cancelled, see why\n\n{tx.Message}";
                 var result2 = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                throw;
+
             }
             catch (Exception ex)
             {
                 string title = "Error";
                 string message = $"Retreiving categories has failed, see why\n\n{ex.Message}";
-                var result2 = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                throw;
+                var result2 = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             }
-            
+            return categories;
+        }
+
+        public async Task<List<YTPlaylist>> GetLists()
+        {
+            YouTubeService ytServ = await GetYouTubeServiceAsync();
+            List<YTPlaylist> allLists = new List<YTPlaylist>();
+            string nextPageToken = null;
+            try
+            {
+                do
+                {
+                    var req = ytServ.Playlists.List("snippet,contentDetails,status");
+                    req.Mine = true;
+                    req.MaxResults = 50;
+                    req.PageToken = nextPageToken;
+
+                    var res = await req.ExecuteAsync();
+
+                    if (res.Items != null)
+                    {
+                        foreach (var item in res.Items)
+                        {
+                            YTPlaylist thisList = new YTPlaylist();
+                            thisList.ListID = item.Id;
+                            thisList.ListName = item.Snippet?.Title;
+                            thisList.ListDescription = item.Snippet?.Description;
+                            thisList.ListVideoCount = item.ContentDetails?.ItemCount;
+
+                            if (item.Snippet?.Thumbnails?.Medium?.Url != null)
+                            {
+                                thisList.ListThumbLink = item.Snippet?.Thumbnails?.Medium?.Url;
+                            }
+                            else
+                            {
+                                thisList.ListThumbLink = item.Snippet?.Thumbnails?.Default__?.Url;
+                            }
+
+                            if (item.Status.PrivacyStatus == "private")
+                            {
+                                thisList.ListPrivacy = PrivacyType.Private;
+                            }
+                            else if (item.Status.PrivacyStatus == "public")
+                            {
+                                thisList.ListPrivacy = PrivacyType.Public;
+                            }
+                            else if (item.Status.PrivacyStatus == "unlisted")
+                            {
+                                thisList.ListPrivacy = PrivacyType.Unlisted;
+                            }
+                            else
+                            {
+                                thisList.ListPrivacy = PrivacyType.Undefined;
+                            }
+                            allLists.Add(thisList);
+                        }
+                    }
+                    nextPageToken = res.NextPageToken;
+                }
+                while (!string.IsNullOrEmpty(nextPageToken));
+            }
+            catch (Exception ex)
+            {
+                string title = "Error";
+                string message = $"Unable to retreive playlists, see why\n\n{ex.Message}";
+                var result2 = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return allLists.OrderBy(l => l.ListName).ToList();
         }
     }
 }
