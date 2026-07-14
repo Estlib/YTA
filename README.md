@@ -17,6 +17,8 @@ This was fun to make.
 ---
 # How to configure for use
 
+Note: This instructional is made with V1.01 of program and may at times, be out of date:
+
 ### Step 1 - google side:
 You need to follow this doc and configure the app to have OAUTH2 in google: https://support.google.com/googleapi/answer/6158849?hl=en
 If youre using the prebuilt one, the prebuilt release docs show you the names you must use,
