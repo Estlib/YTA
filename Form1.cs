@@ -89,6 +89,10 @@ namespace YTA
         }
         private void btnAddEntry_Click(object sender, EventArgs e)
         {
+            List<YTPlaylist> listsVideoBelongsTo = new List<YTPlaylist>();
+            listsVideoBelongsTo = FindSelectedLists();
+
+
             bool result = ValidateModel();
             if (result)
             {
@@ -112,6 +116,9 @@ namespace YTA
                     YTAHandleTime_CreatedAt = DateTime.Now,
                     YTAHandleTime_ModifiedAt = DateTime.Now,
                     YTAHandleTime_PassedToYTAt = dateTimePicker1.Value,
+
+                    ListsIds = string.Join(",", listsVideoBelongsTo.Select(x => x.ListID)),
+                    ListsNames = string.Join(", ", listsVideoBelongsTo.Select(x => x.ListName)),
                 };
                 _contentController.Create(newEntry);
                 string title = "Infos";
@@ -124,6 +131,23 @@ namespace YTA
                 return;
             }
         }
+
+        private List<YTPlaylist> FindSelectedLists()
+        {
+            List<YTPlaylist> listsVideoBelongsTo = new List<YTPlaylist>();
+            foreach (Control cardlist in fboxPlaylists.Controls)
+            {
+                foreach (Control cardElement in cardlist.Controls)
+                {
+                    if (cardElement is CheckBox tick && tick.Checked && tick.Tag is YTPlaylist playlist)
+                    {
+                        listsVideoBelongsTo.Add(playlist);
+                    }
+                }
+            }
+            return listsVideoBelongsTo;
+        }
+
         /// <summary>
         /// find da file
         /// </summary>

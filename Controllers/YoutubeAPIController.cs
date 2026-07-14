@@ -46,7 +46,8 @@ namespace YTA.Controllers
                 GoogleClientSecrets.FromStream(stream).Secrets,
                 new[] {
                     YouTubeService.Scope.YoutubeUpload,
-                    YouTubeService.Scope.YoutubeReadonly
+                    YouTubeService.Scope.YoutubeReadonly,
+                    YouTubeService.Scope.Youtube
                 },
                 "user",
                 CancellationToken.None,
@@ -154,17 +155,17 @@ namespace YTA.Controllers
                 string title = "Error";
                 var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            try
+            {
+                await SetVideoToLists(uploadRequest.ResponseBody.Id, content.ListsIds);
+            }
+            catch (Exception ex)
+            {
+                string message = $"Cannot add video to playlists\n\n{ex.Message}";
+                string title = "Error";
+                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return uploadRequest.ResponseBody.Id;
-            //    break;
-            //case MediaType.Short:
-            //    return null;
-            //    break;
-            //case MediaType.Post:
-            //    return null;
-            //    break;
-            //default:
-            //    return null;
-            //    break;
         }
 
         public async Task ThumbnailUpload(string videoID, string filepath)
@@ -328,6 +329,25 @@ namespace YTA.Controllers
                 var result2 = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return allLists.OrderBy(l => l.ListName).ToList();
+        }
+
+        public async Task SetVideoToLists(string videoID, string? listToSetToID) 
+        {
+            YouTubeService ytServ = await GetYouTubeServiceAsync();
+            PlaylistItem thisAssignees = new PlaylistItem()
+            {
+                Snippet = new PlaylistItemSnippet
+                {
+                    PlaylistId = listToSetToID,
+                    ResourceId = new ResourceId
+                    {
+                        Kind = "youtube#video",
+                        VideoId = videoID
+                    }
+                }
+            };
+            var req = ytServ.PlaylistItems.Insert(thisAssignees, "snippet");
+            await req.ExecuteAsync();
         }
     }
 }

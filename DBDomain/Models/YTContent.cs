@@ -32,7 +32,7 @@ namespace YTA.DBDomain.Models
     {
         // YTA-specific data
         public Guid ID { get; set; } = Guid.NewGuid();
-        public int TableVersion { get; set; } = 2;
+        public int TableVersion { get; set; } = 3;
         public DateTime YTAHandleTime_CreatedAt { get; set; }
         public DateTime YTAHandleTime_ModifiedAt { get; set; }
         public DateTime YTAHandleTime_PassedToYTAt { get; set; }
@@ -57,6 +57,10 @@ namespace YTA.DBDomain.Models
 
         // premorphed from returndata
         public string? VideoLink { get; set; }
+
+        // optional lists
+        public string? ListsIds { get; set; }
+        public string? ListsNames { get; set; }
     }
 }
 
