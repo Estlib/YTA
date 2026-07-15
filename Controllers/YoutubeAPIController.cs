@@ -139,19 +139,20 @@ namespace YTA.Controllers
             IUploadProgress progress = await uploadRequest.UploadAsync();
             if (progress.Status == UploadStatus.Failed)
             {
-                string message = $"Upload has failed. See details:\n\n{progress.Exception}";
+                string message = $"Upload has failed. See details:\n\n{progress.Exception?.Message}";
                 string title = "Error";
                 var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            if (string.IsNullOrWhiteSpace(uploadRequest.ResponseBody.Id))
-            {
-                string message = $"API did not send back video id";
-                string title = "Error";
-                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else if (uploadRequest.ResponseBody == null)
+            
+            if (uploadRequest.ResponseBody == null)
             {
                 string message = $"No response from the API at all. Is null";
+                string title = "Error";
+                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (string.IsNullOrWhiteSpace(uploadRequest.ResponseBody.Id))
+            {
+                string message = $"API did not send back video id";
                 string title = "Error";
                 var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -333,12 +334,21 @@ namespace YTA.Controllers
 
         public async Task SetVideoToLists(string videoID, string? listToSetToID) 
         {
+            if (string.IsNullOrWhiteSpace(listToSetToID))
+            {
+                return;
+            }
             YouTubeService ytServ = await GetYouTubeServiceAsync();
+            string[] listOfListsIDs = listToSetToID.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+            foreach (var ID in listOfListsIDs)
+            {
+
             PlaylistItem thisAssignees = new PlaylistItem()
             {
                 Snippet = new PlaylistItemSnippet
                 {
-                    PlaylistId = listToSetToID,
+                    PlaylistId = ID,
                     ResourceId = new ResourceId
                     {
                         Kind = "youtube#video",
@@ -348,6 +358,7 @@ namespace YTA.Controllers
             };
             var req = ytServ.PlaylistItems.Insert(thisAssignees, "snippet");
             await req.ExecuteAsync();
+            }    
         }
     }
 }

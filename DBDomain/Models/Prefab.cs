@@ -28,5 +28,9 @@ namespace YTA.DBDomain.Models
         // optional lists
         public string? ListsIds { get; set; }
         public string? ListsNames { get; set; }
+        public override string ToString()
+        {
+            return PrefabName;
+        }
     }
 }

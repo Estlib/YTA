@@ -122,6 +122,8 @@
 
 - Scheduling a schedulable video is also not possible, that is what this program is partly for. This might be added in the future.
 
+- Adding end screens is also no possible, due to same reason as community posts - no dev-facing api end points, the program instead, has option to remind you to configure the end screens after the video has been uploaded as an OS message.
+
 - Sorry for programmer UI
 
 - This program is Licensed to you under the GNU GPLv3, see more in enclosed file

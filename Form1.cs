@@ -28,10 +28,12 @@ namespace YTA
     {
         private readonly ContentController _contentController = new ContentController();
         private readonly YoutubeAPIController _youtubeAPIController = new YoutubeAPIController();
+        private readonly PrefabController _prefabController = new PrefabController();
 
         private DateTime _lastScanTime = DateTime.Now;
         private DateTime _nextScanTime = DateTime.Now;
         private bool _tickerBusy = false;
+        private bool _loadingPrefabCategories = false;
 
         public Form1()
         {
@@ -39,6 +41,40 @@ namespace YTA
             InitializeComponent();
             SetupComboEnum();
             SetupTicker();
+            LoadPrefabs();
+        }
+
+        private void LoadPrefabs()
+        {
+
+            var result = _prefabController.GetAllPrefabs();
+            if (result == null || result.Count < 1)
+            {
+                string message = $"No prefabs found.";
+                string title = "Infos";
+                var mbox = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                List<Prefab> prefabsNone = new List<Prefab>();
+                prefabsNone.Add(new Prefab
+                {
+                    ID = Guid.Empty,
+                    PrefabName = "None"
+                });
+                prefabsNone.AddRange(result);
+                cboxWhichPrefab.DataSource = null;
+                cboxWhichPrefab.DisplayMember = "PrefabName";
+                cboxWhichPrefab.ValueMember = "ID";
+                cboxWhichPrefab.DataSource = prefabsNone.ToList();
+                cboxWhichPrefab.SelectedIndex = 0;
+                cboxWhichPrefab_PF.DataSource = null;
+                cboxWhichPrefab_PF.DisplayMember = "PrefabName";
+                cboxWhichPrefab_PF.ValueMember = "ID";
+                cboxWhichPrefab_PF.DataSource = prefabsNone.ToList();
+                cboxWhichPrefab_PF.SelectedIndex = 0;
+            }
+
         }
 
         private void SetupTicker()
@@ -70,7 +106,9 @@ namespace YTA
         private void SetupComboEnum()
         {
             cboxMediaType.DataSource = Enum.GetValues(typeof(MediaType));
+            cboxMediaType_PF.DataSource = Enum.GetValues(typeof(MediaType));
             cboxPrivacy.DataSource = Enum.GetValues(typeof(PrivacyType));
+            cboxPrivacyType_PF.DataSource = Enum.GetValues(typeof(PrivacyType));
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -90,7 +128,7 @@ namespace YTA
         private void btnAddEntry_Click(object sender, EventArgs e)
         {
             List<YTPlaylist> listsVideoBelongsTo = new List<YTPlaylist>();
-            listsVideoBelongsTo = FindSelectedLists();
+            listsVideoBelongsTo = FindSelectedLists(fboxPlaylists);
 
 
             bool result = ValidateModel();
@@ -132,10 +170,10 @@ namespace YTA
             }
         }
 
-        private List<YTPlaylist> FindSelectedLists()
+        private List<YTPlaylist> FindSelectedLists(FlowLayoutPanel uiElement)
         {
             List<YTPlaylist> listsVideoBelongsTo = new List<YTPlaylist>();
-            foreach (Control cardlist in fboxPlaylists.Controls)
+            foreach (Control cardlist in uiElement.Controls)
             {
                 foreach (Control cardElement in cardlist.Controls)
                 {
@@ -227,8 +265,10 @@ namespace YTA
                 channelViewCount.Text = channelInfo.ChannelViewCount.ToString();
                 LoadChannelThumbnail(channelInfo.AvatarLink);
                 labelIsLoggedIn.Text = "Login success";
-                GetYTCategories();
-                GetUserLists();            }
+                await GetYTCategories();
+                await GetYTCategoriesPrefab();
+                await GetUserLists();
+            }
             catch (Exception ex)
             {
 
@@ -725,7 +765,7 @@ namespace YTA
             GetDataFromDB();
         }
 
-        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        private async void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (tabControl1.SelectedTab == calendarTab)
             {
@@ -734,8 +774,12 @@ namespace YTA
             if (tabControl1.SelectedTab == entriesTab)
             {
                 GetDataFromDB();
-                GetYTCategories();
-                GetUserLists();
+                await GetYTCategories();
+                await GetUserLists();
+            }
+            if (tabControl1.SelectedTab == newPrefab)
+            {
+                await GetYTCategoriesPrefab();
             }
         }
 
@@ -745,11 +789,14 @@ namespace YTA
             {
                 List<YTPlaylist> myLists = await _youtubeAPIController.GetLists();
                 fboxPlaylists.Controls.Clear();
+                fboxLists_PF.Controls.Clear();
 
                 foreach (var list in myLists)
                 {
                     Control card = ListCard(list);
+                    Control card2 = ListCard(list);
                     fboxPlaylists.Controls.Add(card);
+                    fboxLists_PF.Controls.Add(card2);
                 }
             }
             catch (Exception ex)
@@ -819,7 +866,7 @@ namespace YTA
             return card;
         }
 
-        private async void GetYTCategories()
+        private async Task GetYTCategories()
         {
             //full metal clanker
             List<YTCategory> categories =
@@ -828,6 +875,28 @@ namespace YTA
             cboxCategory.DisplayMember = "Name";
             cboxCategory.ValueMember = "ID";
             cboxCategory.DataSource = categories;
+        }
+
+        private async Task GetYTCategoriesPrefab()
+        {
+            _loadingPrefabCategories = true;
+            //full metal clanker
+            List<YTCategory> categories =
+            await _youtubeAPIController.GetCategories("EE");
+
+            cboxCategory_PF.DisplayMember = "Name";
+            cboxCategory_PF.ValueMember = "ID";
+
+            List<YTCategory> prefabCategories = new List<YTCategory>();
+            prefabCategories.Add(new YTCategory
+            {
+                ID = "",
+                Name = "NONE",
+            });
+            prefabCategories.AddRange(categories);
+            cboxCategory_PF.DataSource = prefabCategories;
+            cboxCategory_PF.SelectedIndex = 0;
+            _loadingPrefabCategories = false;
         }
 
         private void tboxVideopath_TextChanged(object sender, EventArgs e)
@@ -846,6 +915,13 @@ namespace YTA
             {
                 string title = "Infos";
                 string message = $"Scheduling a scheduled youtube Video is not available at this time.";
+                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                cboxPrivacy.SelectedItem = PrivacyType.Private;
+            }
+            if ((PrivacyType)cboxPrivacy.SelectedItem == PrivacyType.Undefined)
+            {
+                string title = "Error";
+                string message = $"Do not leave this underfined when making an entry.";
                 var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 cboxPrivacy.SelectedItem = PrivacyType.Private;
             }
@@ -890,6 +966,109 @@ namespace YTA
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            //is validation needed?
+            List<YTPlaylist> selectedLists = FindSelectedLists(fboxLists_PF);
+            Prefab newPrefab = new Prefab();
+            newPrefab.PrefabName = tboxVideoTitle_PF.Text;
+            newPrefab.Title = tboxVideoTitle_PF.Text;
+            newPrefab.Description = tboxDescription_PF.Text;
+            newPrefab.VideoTags = tboxTags_PF.Text;
+            newPrefab.ThisMediaIs = (MediaType?)cboxMediaType_PF.SelectedItem;
+            if (cboxCategory_PF.SelectedIndex == 0)
+            {
+                newPrefab.CategoryID = null;
+            }
+            else
+            {
+                newPrefab.CategoryID = cboxCategory_PF.SelectedValue.ToString();
+            }
+            newPrefab.Privacy = (PrivacyType?)cboxPrivacyType_PF.SelectedItem;
+            newPrefab.SelfDeclaredMadeForKids = cboxSelfDeclaredMadeForKids_PF.Checked;
+            newPrefab.ContainsSyntheticMedia = cboxContainsSyntheticMedia_PF.Checked;
+            newPrefab.HasPaidProductPlacement = cboxHasPaidProductPlacement_PF.Checked;
+            newPrefab.ListsIds = string.Join(",", selectedLists.Select(x => x.ListID));
+            newPrefab.ListsNames = string.Join(",", selectedLists.Select(x => x.ListName));
+            _prefabController.Create(newPrefab);
+            LoadPrefabs();
+        }
+
+        private void cboxMediaType_PF_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if ((MediaType)cboxMediaType_PF.SelectedItem == MediaType.Post)
+            {
+                string title = "Infos";
+                string message = $"Scheduling a youtube community post is not supported at this time.";
+                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                cboxMediaType_PF.SelectedItem = MediaType.Video;
+            }
+        }
+
+        private void cboxPrivacyType_PF_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if ((PrivacyType)cboxPrivacyType_PF.SelectedItem == PrivacyType.PublishAt)
+            {
+                string title = "Infos";
+                string message = $"Scheduling a scheduled youtube Video is not available at this time.";
+                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                cboxPrivacyType_PF.SelectedItem = PrivacyType.Private;
+            }
+            if ((PrivacyType)cboxPrivacyType_PF.SelectedItem == PrivacyType.Undefined)
+            {
+                string title = "Warning";
+                string message = $"If left Undefined, the entry will not assign \n" +
+                    $"a type, you will then have to manually still\n" +
+                    $"define it when scheduling based on this prefab.\n\nProceed?";
+                DialogResult result = MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                {
+                    cboxPrivacyType_PF.SelectedItem = PrivacyType.Undefined;
+                }
+                else
+                {
+                    string title2 = "Infos";
+                    string message2 = $"Setting preference to Unlisted.";
+                    var result2 = MessageBox.Show(message2, title2, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cboxPrivacyType_PF.SelectedItem = PrivacyType.Unlisted;
+                }
+            }
+        }
+
+        private void cboxCategory_PF_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_loadingPrefabCategories)
+            {
+                return;
+            }
+
+            if (cboxCategory_PF.SelectedIndex == 0)
+            {
+                string title = "Warning";
+                string message = $"If left NONE, the entry will not assign \n" +
+                    $"a category, you will then have to manually still\n" +
+                    $"define it when scheduling based on this prefab.\n\nProceed?";
+                DialogResult result = MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                {
+                    cboxCategory_PF.SelectedIndex = 0;
+                }
+                else
+                {
+                    string title2 = "Infos";
+                    string message2 = $"Please select a desired category then.";
+                    var result2 = MessageBox.Show(message2, title2, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cboxCategory_PF.SelectedIndex = 1;
+                }
+            }
+        }
+
+        private void btnUpdatePrefab_Click(object sender, EventArgs e)
+        {
+            
+            LoadPrefabs();
         }
     }
 }
