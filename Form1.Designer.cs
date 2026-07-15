@@ -71,10 +71,7 @@ namespace YTA
             newEntryTab = new TabPage();
             label18 = new Label();
             comboBox1 = new ComboBox();
-            button4 = new Button();
-            textBox2 = new TextBox();
             label17 = new Label();
-            label16 = new Label();
             fboxPlaylists = new FlowLayoutPanel();
             cboxCategory = new ComboBox();
             btnAddEntry = new Button();
@@ -133,6 +130,8 @@ namespace YTA
             richTextBox1 = new RichTextBox();
             uploadTicker = new System.Windows.Forms.Timer(components);
             trayIcon = new NotifyIcon(components);
+            label16 = new Label();
+            checkBox1 = new CheckBox();
             tabControl1.SuspendLayout();
             loginTab.SuspendLayout();
             groupBox3.SuspendLayout();
@@ -413,10 +412,7 @@ namespace YTA
             // 
             newEntryTab.Controls.Add(label18);
             newEntryTab.Controls.Add(comboBox1);
-            newEntryTab.Controls.Add(button4);
-            newEntryTab.Controls.Add(textBox2);
             newEntryTab.Controls.Add(label17);
-            newEntryTab.Controls.Add(label16);
             newEntryTab.Controls.Add(fboxPlaylists);
             newEntryTab.Controls.Add(cboxCategory);
             newEntryTab.Controls.Add(btnAddEntry);
@@ -459,24 +455,6 @@ namespace YTA
             comboBox1.Size = new Size(200, 23);
             comboBox1.TabIndex = 22;
             // 
-            // button4
-            // 
-            button4.Enabled = false;
-            button4.Location = new Point(723, 3);
-            button4.Name = "button4";
-            button4.Size = new Size(42, 23);
-            button4.TabIndex = 21;
-            button4.Text = "???";
-            button4.UseVisualStyleBackColor = true;
-            // 
-            // textBox2
-            // 
-            textBox2.Enabled = false;
-            textBox2.Location = new Point(505, 3);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(212, 23);
-            textBox2.TabIndex = 20;
-            // 
             // label17
             // 
             label17.AutoSize = true;
@@ -485,15 +463,6 @@ namespace YTA
             label17.Size = new Size(101, 15);
             label17.TabIndex = 19;
             label17.Text = "Add to playlists ▼";
-            // 
-            // label16
-            // 
-            label16.AutoSize = true;
-            label16.Location = new Point(408, 6);
-            label16.Name = "label16";
-            label16.Size = new Size(91, 15);
-            label16.TabIndex = 18;
-            label16.Text = "End screen ID →";
             // 
             // fboxPlaylists
             // 
@@ -877,6 +846,8 @@ namespace YTA
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(label16);
+            groupBox1.Controls.Add(checkBox1);
             groupBox1.Controls.Add(button3);
             groupBox1.Controls.Add(button2);
             groupBox1.Controls.Add(label14);
@@ -1078,6 +1049,26 @@ namespace YTA
             trayIcon.Visible = true;
             trayIcon.DoubleClick += trayIcon_DoubleClick;
             // 
+            // label16
+            // 
+            label16.AutoSize = true;
+            label16.Location = new Point(6, 174);
+            label16.Name = "label16";
+            label16.Size = new Size(150, 15);
+            label16.TabIndex = 15;
+            label16.Text = "Remind to edit end screens";
+            // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Enabled = false;
+            checkBox1.Location = new Point(308, 173);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(72, 19);
+            checkBox1.TabIndex = 16;
+            checkBox1.Text = "UNREAD";
+            checkBox1.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1198,10 +1189,7 @@ namespace YTA
         private ComboBox cboxCategory;
         private Label label15;
         private LinkLabel linkLabel1;
-        private Label label16;
         private FlowLayoutPanel fboxPlaylists;
-        private Button button4;
-        private TextBox textBox2;
         private Label label17;
         private Label label18;
         private ComboBox comboBox1;
@@ -1211,5 +1199,7 @@ namespace YTA
         private TabPage newPrefab;
         private TabPage managePrefabTab;
         private RichTextBox richTextBox2;
+        private Label label16;
+        private CheckBox checkBox1;
     }
 }

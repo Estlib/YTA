@@ -27,6 +27,7 @@ namespace YTA.DBDomain
         private const string ConnectionString =
     @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\YTA-app.mdf;Initial Catalog=YTA-AppDb;Integrated Security=True;";
         public DbSet<YTContent> YTContents => Set<YTContent>();
+        public DbSet<Prefab> Prefabs => Set<Prefab>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
