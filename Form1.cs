@@ -34,6 +34,7 @@ namespace YTA
         private DateTime _nextScanTime = DateTime.Now;
         private bool _tickerBusy = false;
         private bool _loadingPrefabCategories = false;
+        private bool _loadingPrefabs = false;
 
         public Form1()
         {
@@ -46,7 +47,7 @@ namespace YTA
 
         private void LoadPrefabs()
         {
-
+            _loadingPrefabs = true;
             var result = _prefabController.GetAllPrefabs();
             if (result == null || result.Count < 1)
             {
@@ -74,7 +75,7 @@ namespace YTA
                 cboxWhichPrefab_PF.DataSource = prefabsNone.ToList();
                 cboxWhichPrefab_PF.SelectedIndex = 0;
             }
-
+            _loadingPrefabs = false;
         }
 
         private void SetupTicker()
@@ -1067,8 +1068,99 @@ namespace YTA
 
         private void btnUpdatePrefab_Click(object sender, EventArgs e)
         {
-            
+
             LoadPrefabs();
+        }
+
+        private void cboxWhichPrefab_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_loadingPrefabs == true || cboxWhichPrefab.SelectedValue == null)
+            {
+                return;
+            }
+            Guid isItEmpty = (Guid)cboxWhichPrefab.SelectedValue;
+            if (isItEmpty == Guid.Empty)
+            {
+                return;
+            }
+            Prefab? prefab = _prefabController.GetOneByID(isItEmpty);
+            if (prefab == null) 
+            {
+                string title = "Error";
+                string message = $"Cannot get prefab, ID {isItEmpty.ToString()} is null.";
+                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            if (prefab != null)
+            {
+                EntryFormData(prefab);
+            }
+        }
+
+        private void EntryFormData(Prefab prefab)
+        {
+            if (prefab.ThisMediaIs != null)
+            {
+                cboxMediaType.SelectedItem = prefab.ThisMediaIs.Value;
+            }
+            if (prefab.Privacy != null)
+            {
+                cboxPrivacy.SelectedItem = prefab.Privacy.Value;
+            }
+            if (prefab.Title != null)
+            {
+                tboxTitle.Text = prefab.Title;
+            }
+            if (prefab.Description != null)
+            {
+                tboxDescription.Text = prefab.Description;
+            }
+            if (prefab.VideoTags != null)
+            {
+                tboxTags.Text = prefab.VideoTags;
+            }
+            if (prefab.CategoryID != null)
+            {
+                cboxCategory.SelectedValue = prefab.CategoryID;
+            }
+            if (prefab.SelfDeclaredMadeForKids != null)
+            {
+                tickChild.Checked = prefab.SelfDeclaredMadeForKids.Value;
+            }
+            if (prefab.ContainsSyntheticMedia != null)
+            {
+                tickRobot.Checked = prefab.ContainsSyntheticMedia.Value;
+            }
+            if (prefab.HasPaidProductPlacement != null)
+            {
+                tickProduct.Checked = prefab.HasPaidProductPlacement.Value;
+            }
+            if (prefab.ListsIds != null)
+            {
+                TickListBoxes(fboxPlaylists, prefab.ListsIds);
+            }
+        }
+
+        private void TickListBoxes(FlowLayoutPanel panel, string listsIds)
+        {
+            //full clanker code bcs am slow
+            List<string> selectedIDs = new List<string>();
+            if (!string.IsNullOrWhiteSpace(listsIds))
+            {
+                selectedIDs = listsIds
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .ToList();
+            }
+
+            foreach (Control card in panel.Controls)
+            {
+                foreach (Control child in card.Controls)
+                {
+                    if (child is CheckBox tick && tick.Tag is YTPlaylist playlist)
+                    {
+                        tick.Checked = selectedIDs.Contains(playlist.ListID);
+                    }
+                }
+            }
         }
     }
 }

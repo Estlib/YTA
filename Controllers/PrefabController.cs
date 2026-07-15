@@ -48,5 +48,12 @@ namespace YTA.Controllers
             var result = database.Prefabs.OrderBy(x => x.PrefabName).ToList();
             return result;
         }
+
+        public Prefab GetOneByID(Guid id)
+        {
+            using DBConfiguration database = new DBConfiguration();
+            Prefab result = (Prefab)database.Prefabs.FirstOrDefault();
+            return result;
+        }
     }
 }

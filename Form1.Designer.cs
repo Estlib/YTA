@@ -473,6 +473,7 @@ namespace YTA
             cboxWhichPrefab.Name = "cboxWhichPrefab";
             cboxWhichPrefab.Size = new Size(272, 23);
             cboxWhichPrefab.TabIndex = 22;
+            cboxWhichPrefab.SelectedIndexChanged += cboxWhichPrefab_SelectedIndexChanged;
             // 
             // label17
             // 
