@@ -132,6 +132,22 @@ namespace YTA
             trayIcon = new NotifyIcon(components);
             label16 = new Label();
             checkBox1 = new CheckBox();
+            cboxPrivacyType_PF = new ComboBox();
+            cboxMediaType_PF = new ComboBox();
+            label19 = new Label();
+            flowLayoutPanel1 = new FlowLayoutPanel();
+            comboBox2 = new ComboBox();
+            label20 = new Label();
+            comboBox3 = new ComboBox();
+            label21 = new Label();
+            textBox2 = new TextBox();
+            checkBox4 = new CheckBox();
+            checkBox5 = new CheckBox();
+            checkBox6 = new CheckBox();
+            textBox3 = new TextBox();
+            textBox4 = new TextBox();
+            button4 = new Button();
+            button5 = new Button();
             tabControl1.SuspendLayout();
             loginTab.SuspendLayout();
             groupBox3.SuspendLayout();
@@ -142,6 +158,7 @@ namespace YTA
             prefabTab.SuspendLayout();
             tabControl2.SuspendLayout();
             infoTab.SuspendLayout();
+            newPrefab.SuspendLayout();
             entriesTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataEntryDisplay).BeginInit();
             tickerConf.SuspendLayout();
@@ -440,7 +457,7 @@ namespace YTA
             // label18
             // 
             label18.AutoSize = true;
-            label18.Location = new Point(387, 326);
+            label18.Location = new Point(405, 6);
             label18.Name = "label18";
             label18.Size = new Size(78, 15);
             label18.TabIndex = 23;
@@ -450,9 +467,9 @@ namespace YTA
             // 
             comboBox1.Enabled = false;
             comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(388, 344);
+            comboBox1.Location = new Point(493, 3);
             comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(200, 23);
+            comboBox1.Size = new Size(272, 23);
             comboBox1.TabIndex = 22;
             // 
             // label17
@@ -670,6 +687,22 @@ namespace YTA
             // 
             // newPrefab
             // 
+            newPrefab.Controls.Add(button5);
+            newPrefab.Controls.Add(button4);
+            newPrefab.Controls.Add(textBox4);
+            newPrefab.Controls.Add(textBox3);
+            newPrefab.Controls.Add(checkBox4);
+            newPrefab.Controls.Add(checkBox5);
+            newPrefab.Controls.Add(checkBox6);
+            newPrefab.Controls.Add(comboBox3);
+            newPrefab.Controls.Add(label21);
+            newPrefab.Controls.Add(textBox2);
+            newPrefab.Controls.Add(label20);
+            newPrefab.Controls.Add(comboBox2);
+            newPrefab.Controls.Add(label19);
+            newPrefab.Controls.Add(flowLayoutPanel1);
+            newPrefab.Controls.Add(cboxPrivacyType_PF);
+            newPrefab.Controls.Add(cboxMediaType_PF);
             newPrefab.Location = new Point(4, 24);
             newPrefab.Name = "newPrefab";
             newPrefab.Padding = new Padding(3);
@@ -1069,6 +1102,152 @@ namespace YTA
             checkBox1.Text = "UNREAD";
             checkBox1.UseVisualStyleBackColor = true;
             // 
+            // cboxPrivacyType_PF
+            // 
+            cboxPrivacyType_PF.FormattingEnabled = true;
+            cboxPrivacyType_PF.Location = new Point(133, 6);
+            cboxPrivacyType_PF.Name = "cboxPrivacyType_PF";
+            cboxPrivacyType_PF.Size = new Size(162, 23);
+            cboxPrivacyType_PF.TabIndex = 12;
+            cboxPrivacyType_PF.Text = "Set video privacy";
+            // 
+            // cboxMediaType_PF
+            // 
+            cboxMediaType_PF.FormattingEnabled = true;
+            cboxMediaType_PF.Location = new Point(6, 6);
+            cboxMediaType_PF.Name = "cboxMediaType_PF";
+            cboxMediaType_PF.Size = new Size(121, 23);
+            cboxMediaType_PF.TabIndex = 11;
+            cboxMediaType_PF.Text = "Select media type";
+            // 
+            // label19
+            // 
+            label19.AutoSize = true;
+            label19.Location = new Point(301, 9);
+            label19.Name = "label19";
+            label19.Size = new Size(101, 15);
+            label19.TabIndex = 21;
+            label19.Text = "Add to playlists ▼";
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.AutoScroll = true;
+            flowLayoutPanel1.Location = new Point(281, 35);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(467, 117);
+            flowLayoutPanel1.TabIndex = 20;
+            // 
+            // comboBox2
+            // 
+            comboBox2.FormattingEnabled = true;
+            comboBox2.Location = new Point(492, 6);
+            comboBox2.Name = "comboBox2";
+            comboBox2.Size = new Size(256, 23);
+            comboBox2.TabIndex = 22;
+            // 
+            // label20
+            // 
+            label20.AutoSize = true;
+            label20.Location = new Point(408, 9);
+            label20.Name = "label20";
+            label20.Size = new Size(78, 15);
+            label20.TabIndex = 23;
+            label20.Text = "Select prefab:";
+            // 
+            // comboBox3
+            // 
+            comboBox3.FormattingEnabled = true;
+            comboBox3.Location = new Point(83, 64);
+            comboBox3.Name = "comboBox3";
+            comboBox3.Size = new Size(192, 23);
+            comboBox3.TabIndex = 26;
+            // 
+            // label21
+            // 
+            label21.AutoSize = true;
+            label21.Location = new Point(6, 67);
+            label21.Name = "label21";
+            label21.Size = new Size(71, 15);
+            label21.TabIndex = 25;
+            label21.Text = "Category id:";
+            // 
+            // textBox2
+            // 
+            textBox2.Location = new Point(6, 35);
+            textBox2.Name = "textBox2";
+            textBox2.PlaceholderText = "Video title";
+            textBox2.Size = new Size(269, 23);
+            textBox2.TabIndex = 24;
+            // 
+            // checkBox4
+            // 
+            checkBox4.AutoSize = true;
+            checkBox4.Location = new Point(6, 133);
+            checkBox4.Name = "checkBox4";
+            checkBox4.Size = new Size(167, 19);
+            checkBox4.TabIndex = 29;
+            checkBox4.Text = "Is product placed in video?";
+            checkBox4.UseVisualStyleBackColor = true;
+            // 
+            // checkBox5
+            // 
+            checkBox5.AutoSize = true;
+            checkBox5.Location = new Point(6, 113);
+            checkBox5.Name = "checkBox5";
+            checkBox5.Size = new Size(129, 19);
+            checkBox5.TabIndex = 28;
+            checkBox5.Text = "Is made by clanker?";
+            checkBox5.UseVisualStyleBackColor = true;
+            // 
+            // checkBox6
+            // 
+            checkBox6.AutoSize = true;
+            checkBox6.Location = new Point(6, 93);
+            checkBox6.Name = "checkBox6";
+            checkBox6.Size = new Size(81, 19);
+            checkBox6.TabIndex = 27;
+            checkBox6.Text = "Is for kids?";
+            checkBox6.UseVisualStyleBackColor = true;
+            // 
+            // textBox3
+            // 
+            textBox3.AcceptsReturn = true;
+            textBox3.Location = new Point(6, 158);
+            textBox3.Multiline = true;
+            textBox3.Name = "textBox3";
+            textBox3.PlaceholderText = "explain what you've done";
+            textBox3.ScrollBars = ScrollBars.Vertical;
+            textBox3.Size = new Size(742, 129);
+            textBox3.TabIndex = 30;
+            // 
+            // textBox4
+            // 
+            textBox4.Location = new Point(6, 293);
+            textBox4.Multiline = true;
+            textBox4.Name = "textBox4";
+            textBox4.PlaceholderText = "video tags, separate with comma, space is not a separator";
+            textBox4.ScrollBars = ScrollBars.Vertical;
+            textBox4.Size = new Size(623, 65);
+            textBox4.TabIndex = 31;
+            // 
+            // button4
+            // 
+            button4.Location = new Point(635, 293);
+            button4.Name = "button4";
+            button4.Size = new Size(113, 30);
+            button4.TabIndex = 32;
+            button4.Text = "Save new Prefab";
+            button4.UseVisualStyleBackColor = true;
+            // 
+            // button5
+            // 
+            button5.Location = new Point(635, 328);
+            button5.Name = "button5";
+            button5.Size = new Size(113, 30);
+            button5.TabIndex = 33;
+            button5.Text = "Update Prefab";
+            button5.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1098,6 +1277,8 @@ namespace YTA
             prefabTab.ResumeLayout(false);
             tabControl2.ResumeLayout(false);
             infoTab.ResumeLayout(false);
+            newPrefab.ResumeLayout(false);
+            newPrefab.PerformLayout();
             entriesTab.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataEntryDisplay).EndInit();
             tickerConf.ResumeLayout(false);
@@ -1201,5 +1382,21 @@ namespace YTA
         private RichTextBox richTextBox2;
         private Label label16;
         private CheckBox checkBox1;
+        private ComboBox cboxPrivacyType_PF;
+        private ComboBox cboxMediaType_PF;
+        private Button button5;
+        private Button button4;
+        private TextBox textBox4;
+        private TextBox textBox3;
+        private CheckBox checkBox4;
+        private CheckBox checkBox5;
+        private CheckBox checkBox6;
+        private ComboBox comboBox3;
+        private Label label21;
+        private TextBox textBox2;
+        private Label label20;
+        private ComboBox comboBox2;
+        private Label label19;
+        private FlowLayoutPanel flowLayoutPanel1;
     }
 }
