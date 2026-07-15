@@ -41,6 +41,8 @@ This is where prebuilt instructions end. Report any problems under comments of t
 Build or publish your app for your usage. 
 
 ---
+**If you dont wanna read or look at pretty pictures, go watch this video instead: https://www.youtube.com/watch?v=Nfy8juBDAtg**
+
 # How to use:
 
 ## 1. Interface
@@ -205,3 +207,91 @@ The ticker action log records all of the actions by date time for the user to se
 ## Example Use Case
 
 https://youtu.be/E54KBRhn51o
+
+---
+
+# How to Make a Prefab and use it to make an entry
+
+## 1. Go to the entry prefabs tab.
+
+<img width="825" height="506" alt="image" src="https://github.com/user-attachments/assets/52275341-01c8-4782-a0e4-8b7748730624" />
+
+Here you see 3 tabs, an info tab, which also explains in text how to use it, a prefab editor tab and a manage prefabs tab:
+
+<img width="826" height="507" alt="image" src="https://github.com/user-attachments/assets/7d27ab9a-1afe-4b96-8aa3-0ffe4b42ebb1" />
+
+For our purpose, we are looking at just the prefab editor, as the manage prefabs tab is not fleshed out whatsoever.
+
+## 2. Go to the prefab editor tab
+
+Once you open the editor, alot of the same things as in the entry tab show up. Video title, etc etc. What the prefabs are for, is prebuilding some info about a *type* of video, not any specific video.
+
+Prefabs are, as the info tab also states, essentially channel upload defaults, but you get many types of them, not just one set as is on youtube proper atm.
+This feature is entirely internal to the YTA app and does not modify youtubes api, it just allows you to predetermine settings for entries, which is only video and its related data into the api.
+
+<img width="817" height="504" alt="image" src="https://github.com/user-attachments/assets/6a5c4da4-fc5f-4ce8-bdcf-e8ba51059926" />
+
+Prefabs are identified by their name, so while this field can remain empty, it is recommended that you do not leave it empty:
+
+<img width="817" height="504" alt="image" src="https://github.com/user-attachments/assets/273e7e1f-5a0c-43d9-8760-5ee87086c84d" />
+
+If you wish to edit an existing prefab, select it by its name from the combobox right below it:
+
+<img width="817" height="504" alt="image" src="https://github.com/user-attachments/assets/83e0f629-afd5-412b-9de3-ec2ca579db06" />
+
+Add your other data for the prefab, in this case, a minecraft letsplay series prefab:
+
+<img width="818" height="498" alt="image" src="https://github.com/user-attachments/assets/862d46c8-3761-4322-b837-bd3d7e7fdbad" />
+
+Click Save prefab 
+
+<img width="271" height="151" alt="image" src="https://github.com/user-attachments/assets/a5d42222-1203-412e-88fe-12fe23baf172" /><img width="174" height="166" alt="image" src="https://github.com/user-attachments/assets/5af6db70-8cb7-417d-be1d-d71e8d0c875a" />
+
+A note: At this point, a warning will pop up, this is because as the form clears, It sets the category to NONE. In the prefab settings, the category can be none, but once you use the prefab as the basis of an entry, just like the video type, it must be set then there.
+
+<img width="353" height="226" alt="image" src="https://github.com/user-attachments/assets/528aa0de-e021-49d0-9a88-cb457bbe1910" />
+
+With prefab saved, the field clears, ready for another prefab:
+
+<img width="819" height="496" alt="image" src="https://github.com/user-attachments/assets/04380272-6f40-490b-ab33-75a951a7bd1b" />
+
+and the previously saved prefab becomes available to select for modification.
+
+<img width="366" height="88" alt="image" src="https://github.com/user-attachments/assets/ff6028c1-2f0a-40fb-b958-b1aebf55bc1f" />
+
+For editing, process is identical, but now we need to use our new prefab
+
+## 3. Go to add entry tab:
+
+Here up top, you see the combobox for selecting a prefab:
+
+<img width="820" height="497" alt="image" src="https://github.com/user-attachments/assets/2ac947ed-d202-4144-9282-bd8afb408fcf" />
+
+Select our minecraft letsplay prefab on the entry editor:
+
+<img width="408" height="93" alt="image" src="https://github.com/user-attachments/assets/05677eb3-ed3b-458f-ba81-921158baeef6" />
+
+All the data previously inserted becomes available for editing in the entry tab without you every time inserting it:
+
+<img width="815" height="502" alt="image" src="https://github.com/user-attachments/assets/91b48970-70a3-4240-9a12-78f161e5042d" />
+
+## 4. Customize data
+
+To your prefab, add a video, set the upload time and a thumbnail + any other quick mods:
+
+<img width="824" height="505" alt="image" src="https://github.com/user-attachments/assets/337a22ec-c5fa-4690-9fca-bbf9f39b294c" />
+
+Click add entry:
+
+<img width="120" height="59" alt="image" src="https://github.com/user-attachments/assets/05858d28-a290-4cde-872b-2ea6ee9463ae" />
+
+And you have now used a prefab base for your minecraft letsplay video series. You can have prefab templates like this for many types of content, not just one with this.
+
+<img width="828" height="507" alt="image" src="https://github.com/user-attachments/assets/512afb57-81b7-4314-a503-58147176d8c2" />
+
+---
+
+
+
+
+
