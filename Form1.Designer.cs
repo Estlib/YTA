@@ -95,7 +95,7 @@ namespace YTA
             richTextBox2 = new RichTextBox();
             newPrefab = new TabPage();
             btnDeletePrefab = new Button();
-            textBox5 = new TextBox();
+            tboxPrefabName = new TextBox();
             label22 = new Label();
             btnUpdatePrefab = new Button();
             btnCreateUpdate_PF = new Button();
@@ -692,7 +692,7 @@ namespace YTA
             // newPrefab
             // 
             newPrefab.Controls.Add(btnDeletePrefab);
-            newPrefab.Controls.Add(textBox5);
+            newPrefab.Controls.Add(tboxPrefabName);
             newPrefab.Controls.Add(label22);
             newPrefab.Controls.Add(btnUpdatePrefab);
             newPrefab.Controls.Add(btnCreateUpdate_PF);
@@ -728,12 +728,12 @@ namespace YTA
             btnDeletePrefab.UseVisualStyleBackColor = true;
             btnDeletePrefab.Click += btnDeletePrefab_Click;
             // 
-            // textBox5
+            // tboxPrefabName
             // 
-            textBox5.Location = new Point(384, 6);
-            textBox5.Name = "textBox5";
-            textBox5.Size = new Size(364, 23);
-            textBox5.TabIndex = 35;
+            tboxPrefabName.Location = new Point(384, 6);
+            tboxPrefabName.Name = "tboxPrefabName";
+            tboxPrefabName.Size = new Size(364, 23);
+            tboxPrefabName.TabIndex = 35;
             // 
             // label22
             // 
@@ -1437,7 +1437,7 @@ namespace YTA
         private ComboBox cboxWhichPrefab_PF;
         private Label label19;
         private FlowLayoutPanel fboxLists_PF;
-        private TextBox textBox5;
+        private TextBox tboxPrefabName;
         private Label label22;
         private Button btnDeletePrefab;
     }

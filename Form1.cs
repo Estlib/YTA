@@ -49,33 +49,33 @@ namespace YTA
         private void LoadPrefabs()
         {
             _loadingPrefabs = true;
+            List<Prefab> prefabsNone = new List<Prefab>();
+
+            prefabsNone.Add(new Prefab
+            {
+                ID = Guid.Empty,
+                PrefabName = "None"
+            });
+
             var result = _prefabController.GetAllPrefabs();
-            if (result == null || result.Count < 1)
+
+            if (result != null && result.Count > 0)
             {
-                string message = $"No prefabs found.";
-                string title = "Infos";
-                var mbox = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                List<Prefab> prefabsNone = new List<Prefab>();
-                prefabsNone.Add(new Prefab
-                {
-                    ID = Guid.Empty,
-                    PrefabName = "None"
-                });
                 prefabsNone.AddRange(result);
-                cboxWhichPrefab.DataSource = null;
-                cboxWhichPrefab.DisplayMember = "PrefabName";
-                cboxWhichPrefab.ValueMember = "ID";
-                cboxWhichPrefab.DataSource = prefabsNone.ToList();
-                cboxWhichPrefab.SelectedIndex = 0;
-                cboxWhichPrefab_PF.DataSource = null;
-                cboxWhichPrefab_PF.DisplayMember = "PrefabName";
-                cboxWhichPrefab_PF.ValueMember = "ID";
-                cboxWhichPrefab_PF.DataSource = prefabsNone.ToList();
-                cboxWhichPrefab_PF.SelectedIndex = 0;
             }
+
+            cboxWhichPrefab.DataSource = null;
+            cboxWhichPrefab.DisplayMember = "PrefabName";
+            cboxWhichPrefab.ValueMember = "ID";
+            cboxWhichPrefab.DataSource = prefabsNone.ToList();
+            cboxWhichPrefab.SelectedIndex = 0;
+
+            cboxWhichPrefab_PF.DataSource = null;
+            cboxWhichPrefab_PF.DisplayMember = "PrefabName";
+            cboxWhichPrefab_PF.ValueMember = "ID";
+            cboxWhichPrefab_PF.DataSource = prefabsNone.ToList();
+            cboxWhichPrefab_PF.SelectedIndex = 0;
+
             _loadingPrefabs = false;
         }
 
@@ -782,6 +782,7 @@ namespace YTA
             if (tabControl1.SelectedTab == newPrefab)
             {
                 await GetYTCategoriesPrefab();
+                ClearPrefabFields();
             }
         }
 
@@ -975,7 +976,7 @@ namespace YTA
             //is validation needed?
             List<YTPlaylist> selectedLists = FindSelectedLists(fboxLists_PF);
             Prefab newPrefab = new Prefab();
-            newPrefab.PrefabName = tboxVideoTitle_PF.Text;
+            newPrefab.PrefabName = tboxPrefabName.Text;
             newPrefab.Title = tboxVideoTitle_PF.Text;
             newPrefab.Description = tboxDescription_PF.Text;
             newPrefab.VideoTags = tboxTags_PF.Text;
@@ -996,6 +997,7 @@ namespace YTA
             newPrefab.ListsNames = string.Join(",", selectedLists.Select(x => x.ListName));
             _prefabController.Create(newPrefab);
             LoadPrefabs();
+            ClearPrefabFields();
         }
 
         private void cboxMediaType_PF_SelectedIndexChanged(object sender, EventArgs e)
@@ -1106,6 +1108,7 @@ namespace YTA
             changedPrefab.ListsNames = string.Join(",", selectedLists.Select(x => x.ListName));
             _prefabController.Update(changedPrefab, (Guid)_currentlyEditingPrefabID);
             LoadPrefabs();
+            ClearPrefabFields();
         }
 
         private void cboxWhichPrefab_SelectedIndexChanged(object sender, EventArgs e)
@@ -1177,6 +1180,14 @@ namespace YTA
         }
         private void EntryFormDataPFEdit(Prefab prefab)
         {
+            if (prefab.PrefabName != null)
+            {
+                tboxPrefabName.Text = prefab.PrefabName;
+            }
+            else
+            {
+                tboxPrefabName.Text = "Untitled prefab";
+            }
             if (prefab.ThisMediaIs != null)
             {
                 cboxMediaType_PF.SelectedItem = prefab.ThisMediaIs.Value;
@@ -1293,6 +1304,47 @@ namespace YTA
 
             }
             LoadPrefabs();
+            ClearPrefabFields();
+        }
+
+        private void ClearPrefabFields()
+        {
+            _currentlyEditingPrefabID = null;
+
+            tboxPrefabName.Text = "";
+            tboxVideoTitle_PF.Text = "";
+            tboxDescription_PF.Text = "";
+            tboxTags_PF.Text = "";
+
+            if (cboxMediaType_PF.Items.Count > 0)
+            {
+                cboxMediaType_PF.SelectedIndex = 0;
+            }
+
+            if (cboxPrivacyType_PF.Items.Count > 0)
+            {
+                cboxPrivacyType_PF.SelectedIndex = 0;
+            }
+
+            if (cboxCategory_PF.Items.Count > 0)
+            {
+                cboxCategory_PF.SelectedIndex = 0; // NONE
+            }
+
+            cboxSelfDeclaredMadeForKids_PF.Checked = false;
+            cboxContainsSyntheticMedia_PF.Checked = false;
+            cboxHasPaidProductPlacement_PF.Checked = false;
+
+            foreach (Control card in fboxLists_PF.Controls)
+            {
+                foreach (Control child in card.Controls)
+                {
+                    if (child is CheckBox tick)
+                    {
+                        tick.Checked = false;
+                    }
+                }
+            }
         }
     }
 }
