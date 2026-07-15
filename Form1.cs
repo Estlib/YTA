@@ -35,6 +35,7 @@ namespace YTA
         private bool _tickerBusy = false;
         private bool _loadingPrefabCategories = false;
         private bool _loadingPrefabs = false;
+        private Guid? _currentlyEditingPrefabID = null;
 
         public Form1()
         {
@@ -1068,7 +1069,42 @@ namespace YTA
 
         private void btnUpdatePrefab_Click(object sender, EventArgs e)
         {
-
+            if (_currentlyEditingPrefabID == null)
+            {
+                string title2 = "Infos";
+                string message2 = $"Please select a prefab to edit.";
+                var result2 = MessageBox.Show(message2, title2, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            List<YTPlaylist> selectedLists = FindSelectedLists(fboxLists_PF);
+            Prefab changedPrefab = new Prefab();
+            changedPrefab.PrefabName = tboxVideoTitle_PF.Text;
+            changedPrefab.Title = tboxVideoTitle_PF.Text;
+            changedPrefab.Description = tboxDescription_PF.Text;
+            changedPrefab.VideoTags = tboxTags_PF.Text;
+            changedPrefab.ThisMediaIs = (MediaType?)cboxMediaType_PF.SelectedItem;
+            if (cboxCategory_PF.SelectedIndex == 0)
+            {
+                changedPrefab.CategoryID = null;
+            }
+            else
+            {
+                if (cboxCategory_PF.SelectedValue != null)
+                {
+                    changedPrefab.CategoryID = cboxCategory_PF.SelectedValue.ToString();
+                }
+                else
+                {
+                    changedPrefab.CategoryID = null;
+                }
+            }
+            changedPrefab.Privacy = (PrivacyType?)cboxPrivacyType_PF.SelectedItem;
+            changedPrefab.SelfDeclaredMadeForKids = cboxSelfDeclaredMadeForKids_PF.Checked;
+            changedPrefab.ContainsSyntheticMedia = cboxContainsSyntheticMedia_PF.Checked;
+            changedPrefab.HasPaidProductPlacement = cboxHasPaidProductPlacement_PF.Checked;
+            changedPrefab.ListsIds = string.Join(",", selectedLists.Select(x => x.ListID));
+            changedPrefab.ListsNames = string.Join(",", selectedLists.Select(x => x.ListName));
+            _prefabController.Update(changedPrefab, (Guid)_currentlyEditingPrefabID);
             LoadPrefabs();
         }
 
@@ -1215,6 +1251,7 @@ namespace YTA
             Guid isItEmpty = (Guid)cboxWhichPrefab_PF.SelectedValue;
             if (isItEmpty == Guid.Empty)
             {
+                _currentlyEditingPrefabID = null;
                 return;
             }
             Prefab? prefab = _prefabController.GetOneByID(isItEmpty);
@@ -1226,8 +1263,36 @@ namespace YTA
             }
             if (prefab != null)
             {
+                _currentlyEditingPrefabID = prefab.ID;
                 EntryFormDataPFEdit(prefab);
             }
+        }
+
+        private void btnDeletePrefab_Click(object sender, EventArgs e)
+        {
+            if (_currentlyEditingPrefabID == null)
+            {
+                string title2 = "Error";
+                string message2 = $"No id.";
+                var result2 = MessageBox.Show(message2, title2, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            else
+            {
+                string title = "Warning";
+                string message = $"Are you sure about that?";
+                DialogResult result = MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                {
+                    _prefabController.Delete((Guid)_currentlyEditingPrefabID);
+                }
+                else
+                {
+                    return;
+                }
+
+            }
+            LoadPrefabs();
         }
     }
 }

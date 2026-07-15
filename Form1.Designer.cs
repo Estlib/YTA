@@ -94,6 +94,7 @@ namespace YTA
             infoTab = new TabPage();
             richTextBox2 = new RichTextBox();
             newPrefab = new TabPage();
+            btnDeletePrefab = new Button();
             textBox5 = new TextBox();
             label22 = new Label();
             btnUpdatePrefab = new Button();
@@ -690,6 +691,7 @@ namespace YTA
             // 
             // newPrefab
             // 
+            newPrefab.Controls.Add(btnDeletePrefab);
             newPrefab.Controls.Add(textBox5);
             newPrefab.Controls.Add(label22);
             newPrefab.Controls.Add(btnUpdatePrefab);
@@ -715,6 +717,16 @@ namespace YTA
             newPrefab.TabIndex = 1;
             newPrefab.Text = "Prefab Editor";
             newPrefab.UseVisualStyleBackColor = true;
+            // 
+            // btnDeletePrefab
+            // 
+            btnDeletePrefab.Location = new Point(573, 293);
+            btnDeletePrefab.Name = "btnDeletePrefab";
+            btnDeletePrefab.Size = new Size(56, 65);
+            btnDeletePrefab.TabIndex = 36;
+            btnDeletePrefab.Text = "Erase Prefab";
+            btnDeletePrefab.UseVisualStyleBackColor = true;
+            btnDeletePrefab.Click += btnDeletePrefab_Click;
             // 
             // textBox5
             // 
@@ -759,7 +771,7 @@ namespace YTA
             tboxTags_PF.Name = "tboxTags_PF";
             tboxTags_PF.PlaceholderText = "video tags, separate with comma, space is not a separator";
             tboxTags_PF.ScrollBars = ScrollBars.Vertical;
-            tboxTags_PF.Size = new Size(623, 65);
+            tboxTags_PF.Size = new Size(561, 65);
             tboxTags_PF.TabIndex = 31;
             // 
             // tboxDescription_PF
@@ -1427,5 +1439,6 @@ namespace YTA
         private FlowLayoutPanel fboxLists_PF;
         private TextBox textBox5;
         private Label label22;
+        private Button btnDeletePrefab;
     }
 }

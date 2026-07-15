@@ -55,5 +55,52 @@ namespace YTA.Controllers
             Prefab result = (Prefab)database.Prefabs.FirstOrDefault(x => x.ID == id);
             return result;
         }
+
+        public void Update(Prefab updatePrefab, Guid id)
+        {
+
+            using DBConfiguration database = new DBConfiguration();
+            if (updatePrefab == null)
+            {
+                string message = $"Prefab is null";
+                string title = "Error";
+                var mbox = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            updatePrefab.ID = id;
+            updatePrefab.Prefab_ModifiedAt = DateTime.Now;
+            try
+            {
+                database.Prefabs.Update(updatePrefab);
+                database.SaveChanges();
+                string message = $"Prefab saved";
+                string title = "Infos";
+                var mbox = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            }
+            catch (Exception ex)
+            {
+                string message = $"Save to db has failed. See details:\n\n{ex.Message}\n\nInner: {ex.InnerException.Message}";
+                string title = "Error";
+                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
+        }
+
+        public void Delete(Guid id)
+        {
+            if (id == null || id == Guid.Empty)
+            {
+                return;
+            }
+            else
+            {
+                using DBConfiguration database = new DBConfiguration();
+                Prefab result = (Prefab)database.Prefabs.FirstOrDefault(x => x.ID == id);
+                database.Prefabs.Remove(result);
+                database.SaveChanges();
+            }
+            
+        }
     }
 }
