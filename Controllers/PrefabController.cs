@@ -52,7 +52,7 @@ namespace YTA.Controllers
         public Prefab GetOneByID(Guid id)
         {
             using DBConfiguration database = new DBConfiguration();
-            Prefab result = (Prefab)database.Prefabs.FirstOrDefault();
+            Prefab result = (Prefab)database.Prefabs.FirstOrDefault(x => x.ID == id);
             return result;
         }
     }

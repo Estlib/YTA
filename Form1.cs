@@ -1084,7 +1084,7 @@ namespace YTA
                 return;
             }
             Prefab? prefab = _prefabController.GetOneByID(isItEmpty);
-            if (prefab == null) 
+            if (prefab == null)
             {
                 string title = "Error";
                 string message = $"Cannot get prefab, ID {isItEmpty.ToString()} is null.";
@@ -1139,6 +1139,49 @@ namespace YTA
                 TickListBoxes(fboxPlaylists, prefab.ListsIds);
             }
         }
+        private void EntryFormDataPFEdit(Prefab prefab)
+        {
+            if (prefab.ThisMediaIs != null)
+            {
+                cboxMediaType_PF.SelectedItem = prefab.ThisMediaIs.Value;
+            }
+            if (prefab.Privacy != null)
+            {
+                cboxPrivacyType_PF.SelectedItem = prefab.Privacy.Value;
+            }
+            if (prefab.Title != null)
+            {
+                tboxVideoTitle_PF.Text = prefab.Title;
+            }
+            if (prefab.Description != null)
+            {
+                tboxDescription_PF.Text = prefab.Description;
+            }
+            if (prefab.VideoTags != null)
+            {
+                tboxTags_PF.Text = prefab.VideoTags;
+            }
+            if (prefab.CategoryID != null)
+            {
+                cboxCategory_PF.SelectedValue = prefab.CategoryID;
+            }
+            if (prefab.SelfDeclaredMadeForKids != null)
+            {
+                cboxSelfDeclaredMadeForKids_PF.Checked = prefab.SelfDeclaredMadeForKids.Value;
+            }
+            if (prefab.ContainsSyntheticMedia != null)
+            {
+                cboxContainsSyntheticMedia_PF.Checked = prefab.ContainsSyntheticMedia.Value;
+            }
+            if (prefab.HasPaidProductPlacement != null)
+            {
+                cboxHasPaidProductPlacement_PF.Checked = prefab.HasPaidProductPlacement.Value;
+            }
+            if (prefab.ListsIds != null)
+            {
+                TickListBoxes(fboxLists_PF, prefab.ListsIds);
+            }
+        }
 
         private void TickListBoxes(FlowLayoutPanel panel, string listsIds)
         {
@@ -1160,6 +1203,30 @@ namespace YTA
                         tick.Checked = selectedIDs.Contains(playlist.ListID);
                     }
                 }
+            }
+        }
+
+        private void cboxWhichPrefab_PF_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_loadingPrefabs == true || cboxWhichPrefab_PF.SelectedValue == null)
+            {
+                return;
+            }
+            Guid isItEmpty = (Guid)cboxWhichPrefab_PF.SelectedValue;
+            if (isItEmpty == Guid.Empty)
+            {
+                return;
+            }
+            Prefab? prefab = _prefabController.GetOneByID(isItEmpty);
+            if (prefab == null)
+            {
+                string title = "Error";
+                string message = $"Cannot get prefab, ID {isItEmpty.ToString()} is null.";
+                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            if (prefab != null)
+            {
+                EntryFormDataPFEdit(prefab);
             }
         }
     }

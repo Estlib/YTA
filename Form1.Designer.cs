@@ -845,6 +845,7 @@ namespace YTA
             cboxWhichPrefab_PF.Name = "cboxWhichPrefab_PF";
             cboxWhichPrefab_PF.Size = new Size(256, 23);
             cboxWhichPrefab_PF.TabIndex = 22;
+            cboxWhichPrefab_PF.SelectedIndexChanged += cboxWhichPrefab_PF_SelectedIndexChanged;
             // 
             // label19
             // 
