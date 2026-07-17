@@ -36,16 +36,28 @@ namespace YTA
         private bool _loadingPrefabCategories = false;
         private bool _loadingPrefabs = false;
         private Guid? _currentlyEditingPrefabID = null;
+        private bool _isOnTray = false;
+        private bool _OSMSGEnable = true;
+        private bool _reminders = true;
 
         public Form1()
         {
-
             InitializeComponent();
             SetupComboEnum();
             SetupTicker();
             LoadPrefabs();
+            Settingsetter();
         }
 
+        private void Settingsetter()
+        {
+            tickBubbles.Checked = _OSMSGEnable;
+            tickReminders.Checked = _reminders;
+        }
+
+        /// <summary>
+        /// Loads user-created prefab settings from db
+        /// </summary>
         private void LoadPrefabs()
         {
             _loadingPrefabs = true;
@@ -78,7 +90,12 @@ namespace YTA
 
             _loadingPrefabs = false;
         }
-
+        /// <summary>
+        /// Configures the upload ticker with the specified interval and updates its state.
+        /// </summary>
+        /// <remarks>This method sets the ticker interval based on the configured value, initializes the
+        /// last and next scan times,  and updates the ticker's enabled state and associated UI elements. The ticker is
+        /// initially disabled after setup.</remarks>
         private void SetupTicker()
         {
             uploadTicker.Interval = (int)tickerIntervalSetting.Value * 60 * 1000;
@@ -96,7 +113,12 @@ namespace YTA
             }
             UpdateScanInfo();
         }
-
+        /// <summary>
+        /// Updates the displayed scan information, including the last scan time, next scan time,  and the number of
+        /// uploaded items.
+        /// </summary>
+        /// <remarks>This method updates the text boxes with the latest scan-related data. The values are 
+        /// retrieved from internal fields and the content controller.</remarks>
         private void UpdateScanInfo()
         {
             tboxWhenLastScan.Text = _lastScanTime.ToString();
@@ -105,6 +127,13 @@ namespace YTA
         }
 
         // form element methods
+
+        /// <summary>
+        /// Populates the data sources of combo box controls with the values of the corresponding enumeration types.
+        /// </summary>
+        /// <remarks>This method sets the data sources of the combo boxes to the values of the <see
+        /// cref="MediaType"/> and <see cref="PrivacyType"/> enumerations. This allows the combo boxes to display all
+        /// possible values of these enumerations for user selection.</remarks>
         private void SetupComboEnum()
         {
             cboxMediaType.DataSource = Enum.GetValues(typeof(MediaType));
@@ -113,20 +142,28 @@ namespace YTA
             cboxPrivacyType_PF.DataSource = Enum.GetValues(typeof(PrivacyType));
         }
 
-        private void label2_Click(object sender, EventArgs e)
-        {
 
-        }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
 
-        }
 
+        /// <summary>
+        /// Refreshes Data seen in database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnRefreshData_Click(object sender, EventArgs e)
         {
             GetDataFromDB();
         }
+        /// <summary>
+        /// Handles the click event of the "Add Entry" button, creating a new YouTube content entry and saving it to the
+        /// database if the input data is valid.
+        /// </summary>
+        /// <remarks>This method validates the input data, constructs a new <see cref="YTContent"/> object
+        /// with the provided details, and saves it using the content controller. If the input data is invalid, the
+        /// method exits without performing any action.</remarks>
+        /// <param name="sender">The source of the event, typically the "Add Entry" button.</param>
+        /// <param name="e">An <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnAddEntry_Click(object sender, EventArgs e)
         {
             List<YTPlaylist> listsVideoBelongsTo = new List<YTPlaylist>();
@@ -585,7 +622,15 @@ namespace YTA
             {
                 string message = $"Some required data has not been filled, see below:\n\n{missingData}";
                 string title = "Error";
-                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (_isOnTray == true && _OSMSGEnable == true)
+                {
+                    trayIcon.ShowBalloonTip(3000, title, message, ToolTipIcon.Error
+                        );
+                }
+                else
+                {
+                    var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 return false;
             }
             else
@@ -615,23 +660,9 @@ namespace YTA
                 "Please note that the ticker will not stop, as the local entries are still scheduled.\n\n Next" +
                 " time you log in (even with a different user), anything and everything up to that point in time will be uploaded to whoever logs in.";
             var result2 = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            btnLogin.Enabled = true;
+            btnLogOut.Enabled = false;
         }
-
-        private void label6_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label7_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void tickerOnOff_CheckedChanged(object sender, EventArgs e)
         {
 
@@ -711,11 +742,21 @@ namespace YTA
                 _tickerBusy = true;
                 DateTime thisScanTime = DateTime.Now;
                 LogTool("Cycle started.");
-                List<YTContent> toUpload = _contentController.GetUploadQueue(_lastScanTime, thisScanTime);
+
+                List<YTContent> toUpload = _contentController.GetUploadQueue(_lastScanTime, thisScanTime); if (_isOnTray == true && _OSMSGEnable == true)
+                {
+                    trayIcon.ShowBalloonTip(3000, "Upload procedure", $"Uploading {toUpload.Count} entries", ToolTipIcon.Info
+                        );
+                }
                 LogTool($"Found {toUpload.Count} in queue");
                 foreach (var queueEntry in toUpload)
                 {
                     LogTool($"Uploading \"{queueEntry.Title}\"");
+                    if (_isOnTray == true && _OSMSGEnable == true)
+                    {
+                        trayIcon.ShowBalloonTip(3000, "Upload procedure", $"Uploading {queueEntry.Title}", ToolTipIcon.Info
+                            );
+                    }
                     string videoID = await _youtubeAPIController.CreateContent(queueEntry);
                     queueEntry.VideoID = videoID;
                     queueEntry.VideoLink = "https://www.youtube.com/watch?v=" + videoID;
@@ -728,15 +769,59 @@ namespace YTA
                         //log thumb
                     }
                     LogTool($"\"{queueEntry.Title}\" uploaded.");
+                    if (_reminders == true)
+                    {
+                        if (queueEntry.ThisMediaIs == MediaType.Video)
+                        {
+                            if (queueEntry.CategoryID == "20")
+                            {
+                                string title = "REMINDER";
+                                string message = $"Add game name and end screens on youtubes own editor";
+                                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            }
+                            else
+                            {
+                                string title = "REMINDER";
+                                string message = $"Add end screens on youtubes own editor";
+                                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            }
+                        }
+                        else if (queueEntry.ThisMediaIs == MediaType.Short)
+                        {
+
+                            if (queueEntry.CategoryID == "20")
+                            {
+                                string title = "REMINDER";
+                                string message = $"Add game name and related video on youtubes own editor\n{queueEntry.VideoLink}";
+                                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            }
+                            else
+                            {
+                                string title = "REMINDER";
+                                string message = $"Add related video on youtubes own editor\n{queueEntry.VideoLink}";
+                                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            }
+                        }
+                    }
                 }
                 _lastScanTime = thisScanTime;
                 _nextScanTime = DateTime.Now.AddMilliseconds(uploadTicker.Interval);
                 LogTool("Cycle finished.");
+                if (_isOnTray == true && _OSMSGEnable == true)
+                {
+                    trayIcon.ShowBalloonTip(3000, "Upload procedure", $"Uploading finished", ToolTipIcon.Info
+                        );
+                }
 
             }
             catch (Exception ex)
             {
                 LogTool($"Error, see details:\n\n{ex.Message}");
+                if (_isOnTray == true && _OSMSGEnable == true)
+                {
+                    trayIcon.ShowBalloonTip(3000, "Upload procedure", $"Uploading {ex.Message}", ToolTipIcon.Error
+                        );
+                }
             }
             finally
             {
@@ -746,13 +831,25 @@ namespace YTA
                 GetDataFromDB();
             }
         }
-
+        /// <summary>
+        /// Logs a message to the ticker log with a timestamp.
+        /// </summary>
+        /// <remarks>The log entry includes the current date and time in the format "dd MMMM | HH:mm:ss",
+        /// followed by the provided message. Each log entry is appended to the existing content.</remarks>
+        /// <param name="v">The message to log. Cannot be null or empty.</param>
         private void LogTool(string v)
         {
-            tboxTickerLog.AppendText($"[{DateTime.Now.ToString("M HH:mm:ss")}] - " + v + Environment.NewLine);
+            tboxTickerLog.AppendText($"[{DateTime.Now.ToString("dd MMMM | HH:mm:ss")}] - " + v + Environment.NewLine);
 
         }
-
+        /// <summary>
+        /// Handles the click event of the Delete Row button, allowing the user to delete the currently selected row.
+        /// </summary>
+        /// <remarks>If no row is selected, a message box is displayed to inform the user that a selection
+        /// is required. When a row is selected, the corresponding data is deleted, and the data grid is refreshed to
+        /// reflect the changes.</remarks>
+        /// <param name="sender">The source of the event, typically the Delete Row button.</param>
+        /// <param name="e">An <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnDeleteRow_Click(object sender, EventArgs e)
         {
             YTContent? selected = dataEntryDisplay.CurrentRow?.DataBoundItem as YTContent;
@@ -766,7 +863,18 @@ namespace YTA
             _contentController.Delete(selected);
             GetDataFromDB();
         }
-
+        /// <summary>
+        /// Handles the <see cref="TabControl.SelectedIndexChanged"/> event for <c>tabControl1</c>. Updates the
+        /// application state based on the selected tab.
+        /// </summary>
+        /// <remarks>Performs different actions depending on the selected tab: <list type="bullet"> <item>
+        /// <description>If the selected tab is <c>calendarTab</c>, the calendar data is refreshed.</description>
+        /// </item> <item> <description>If the selected tab is <c>entriesTab</c>, data is retrieved from the database,
+        /// and YouTube categories and user lists are loaded asynchronously.</description> </item> <item>
+        /// <description>If the selected tab is <c>newPrefab</c>, YouTube categories for prefabs are loaded
+        /// asynchronously, and prefab fields are cleared.</description> </item> </list></remarks>
+        /// <param name="sender">The source of the event, typically <c>tabControl1</c>.</param>
+        /// <param name="e">An <see cref="EventArgs"/> instance containing the event data.</param>
         private async void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (tabControl1.SelectedTab == calendarTab)
@@ -785,7 +893,14 @@ namespace YTA
                 ClearPrefabFields();
             }
         }
-
+        /// <summary>
+        /// Retrieves the user's YouTube playlists asynchronously and updates the associated UI controls.
+        /// </summary>
+        /// <remarks>This method fetches a list of YouTube playlists using the YouTube API controller and
+        /// populates the corresponding UI elements with playlist cards. It clears the existing controls in the target
+        /// containers before adding the new playlist cards. If an error occurs during the operation, an error message
+        /// is displayed to the user.</remarks>
+        /// <returns></returns>
         private async Task GetUserLists()
         {
             try
@@ -806,7 +921,7 @@ namespace YTA
             {
                 string title = "Error";
                 string message = $"idk wat de fuk wrong, lookie:\n\n{ex.Message}";
-                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var result = MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -868,7 +983,14 @@ namespace YTA
 
             return card;
         }
-
+        /// <summary>
+        /// Retrieves a list of YouTube categories for the specified region and binds them to the category selection
+        /// control.
+        /// </summary>
+        /// <remarks>This method fetches YouTube categories for the region specified in the API call and
+        /// sets the data source of the category selection control. The control is configured to display the category
+        /// name and use the category ID as the value.</remarks>
+        /// <returns></returns>
         private async Task GetYTCategories()
         {
             //full metal clanker
@@ -879,7 +1001,14 @@ namespace YTA
             cboxCategory.ValueMember = "ID";
             cboxCategory.DataSource = categories;
         }
-
+        /// <summary>
+        /// Asynchronously retrieves YouTube categories and populates the category selection dropdown with the results.
+        /// </summary>
+        /// <remarks>This method fetches a list of YouTube categories using the YouTube API and updates
+        /// the dropdown control with the retrieved categories. A default "NONE" option is added to the list, and the
+        /// first item is selected by default. The method sets a loading flag during the operation to indicate that the
+        /// categories are being loaded.</remarks>
+        /// <returns></returns>
         private async Task GetYTCategoriesPrefab()
         {
             _loadingPrefabCategories = true;
@@ -902,16 +1031,16 @@ namespace YTA
             _loadingPrefabCategories = false;
         }
 
-        private void tboxVideopath_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tboxDescription_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
+        /// <summary>
+        /// Handles the <see cref="ComboBox.SelectedIndexChanged"/> event for the privacy selection combo box.
+        /// </summary>
+        /// <remarks>Displays an informational message if the selected privacy type is <see
+        /// cref="PrivacyType.PublishAt"/>,  indicating that scheduling a YouTube video is not currently available. If
+        /// the selected privacy type is  <see cref="PrivacyType.Undefined"/>, an error message is displayed, prompting
+        /// the user to select a valid option. In both cases, the selection is reset to <see
+        /// cref="PrivacyType.Private"/>.</remarks>
+        /// <param name="sender">The source of the event, typically the privacy selection combo box.</param>
+        /// <param name="e">An <see cref="EventArgs"/> instance containing the event data.</param>
         private void cboxPrivacy_SelectedIndexChanged(object sender, EventArgs e)
         {
             if ((PrivacyType)cboxPrivacy.SelectedItem == PrivacyType.PublishAt)
@@ -930,21 +1059,6 @@ namespace YTA
             }
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void cboxCategory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             ProcessStartInfo nav = new ProcessStartInfo()
@@ -954,7 +1068,14 @@ namespace YTA
             };
             Process.Start(nav);
         }
-
+        /// <summary>
+        /// Handles the <see cref="ComboBox.SelectedIndexChanged"/> event for the media type selection.
+        /// </summary>
+        /// <remarks>If the selected media type is <see cref="MediaType.Post"/>, a message box is
+        /// displayed to inform the user  that scheduling a YouTube community post is not supported. The selection is
+        /// then reverted to <see cref="MediaType.Video"/>.</remarks>
+        /// <param name="sender">The source of the event, typically the media type <see cref="ComboBox"/>.</param>
+        /// <param name="e">An <see cref="EventArgs"/> instance containing the event data.</param>
         private void cboxMediaType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if ((MediaType)cboxMediaType.SelectedItem == MediaType.Post)
@@ -970,7 +1091,15 @@ namespace YTA
         {
 
         }
-
+        /// <summary>
+        /// Handles the click event for the "Create Prefab" button, creating a new prefab based on the input fields and
+        /// adding it to the prefab collection.
+        /// </summary>
+        /// <remarks>This method gathers data from the user interface, including text fields, combo boxes,
+        /// and checkboxes, to construct a new <see cref="Prefab"/> object. The prefab is then created using the prefab
+        /// controller, and the UI is updated to reflect the changes.</remarks>
+        /// <param name="sender">The source of the event, typically the button that was clicked.</param>
+        /// <param name="e">An instance of <see cref="EventArgs"/> containing event data.</param>
         private void button4_Click(object sender, EventArgs e)
         {
             //is validation needed?
@@ -999,7 +1128,14 @@ namespace YTA
             LoadPrefabs();
             ClearPrefabFields();
         }
-
+        /// <summary>
+        /// Handles the <see cref="ComboBox.SelectedIndexChanged"/> event for the media type selection.
+        /// </summary>
+        /// <remarks>If the selected media type is <see cref="MediaType.Post"/>, a message box is
+        /// displayed to inform the user  that scheduling a YouTube community post is not supported. The selection is
+        /// then reverted to <see cref="MediaType.Video"/>.</remarks>
+        /// <param name="sender">The source of the event, typically the <see cref="ComboBox"/> control.</param>
+        /// <param name="e">An <see cref="EventArgs"/> instance containing the event data.</param>
         private void cboxMediaType_PF_SelectedIndexChanged(object sender, EventArgs e)
         {
             if ((MediaType)cboxMediaType_PF.SelectedItem == MediaType.Post)
@@ -1010,7 +1146,18 @@ namespace YTA
                 cboxMediaType_PF.SelectedItem = MediaType.Video;
             }
         }
-
+        /// <summary>
+        /// Handles the <see cref="ComboBox.SelectedIndexChanged"/> event for the privacy type selection.
+        /// </summary>
+        /// <remarks>This method updates the selected privacy type based on user input and displays
+        /// informational or warning messages when specific privacy types are selected. If the user selects <see
+        /// cref="PrivacyType.PublishAt"/>, a message is shown indicating that scheduling is not available, and the
+        /// selection is reverted to <see cref="PrivacyType.Private"/>.  If the user selects <see
+        /// cref="PrivacyType.Undefined"/>, a warning is displayed, and the user is prompted to confirm. Depending on
+        /// the user's response, the selection is either kept as <see cref="PrivacyType.Undefined"/> or changed to <see
+        /// cref="PrivacyType.Unlisted"/>.</remarks>
+        /// <param name="sender">The source of the event, typically the privacy type combo box.</param>
+        /// <param name="e">An <see cref="EventArgs"/> instance containing the event data.</param>
         private void cboxPrivacyType_PF_SelectedIndexChanged(object sender, EventArgs e)
         {
             if ((PrivacyType)cboxPrivacyType_PF.SelectedItem == PrivacyType.PublishAt)
@@ -1040,7 +1187,15 @@ namespace YTA
                 }
             }
         }
-
+        /// <summary>
+        /// Handles the <see cref="ComboBox.SelectedIndexChanged"/> event for the category selection ComboBox. Displays
+        /// warnings and prompts the user to confirm or adjust their selection when the "NONE" category is chosen.
+        /// </summary>
+        /// <remarks>If the "NONE" category is selected, the user is warned that no category will be
+        /// assigned, and they are prompted to confirm or select a different category. The method does not proceed if
+        /// the category list is being loaded programmatically.</remarks>
+        /// <param name="sender">The source of the event, typically the category selection ComboBox.</param>
+        /// <param name="e">An <see cref="EventArgs"/> instance containing the event data.</param>
         private void cboxCategory_PF_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_loadingPrefabCategories)
@@ -1068,7 +1223,16 @@ namespace YTA
                 }
             }
         }
-
+        /// <summary>
+        /// Handles the click event for the "Update Prefab" button, updating the currently selected prefab with the
+        /// provided details.
+        /// </summary>
+        /// <remarks>This method updates the prefab currently being edited with the values entered in the
+        /// form fields.  If no prefab is selected, a message box is displayed to inform the user. The updated prefab
+        /// details  include its name, title, description, tags, media type, category, privacy settings, and other
+        /// metadata. After updating, the prefab list is reloaded, and the form fields are cleared.</remarks>
+        /// <param name="sender">The source of the event, typically the button that was clicked.</param>
+        /// <param name="e">An <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnUpdatePrefab_Click(object sender, EventArgs e)
         {
             if (_currentlyEditingPrefabID == null)
@@ -1110,7 +1274,14 @@ namespace YTA
             LoadPrefabs();
             ClearPrefabFields();
         }
-
+        /// <summary>
+        /// Handles the event triggered when the selected index of the prefab combo box changes.
+        /// </summary>
+        /// <remarks>This method updates the form data based on the selected prefab. If the combo box is
+        /// in a loading state  or the selected value is null or empty, the method exits without performing any action.
+        /// If the selected  prefab cannot be retrieved, an error message is displayed to the user.</remarks>
+        /// <param name="sender">The source of the event, typically the combo box.</param>
+        /// <param name="e">An <see cref="EventArgs"/> instance containing the event data.</param>
         private void cboxWhichPrefab_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_loadingPrefabs == true || cboxWhichPrefab.SelectedValue == null)
@@ -1134,7 +1305,14 @@ namespace YTA
                 EntryFormData(prefab);
             }
         }
-
+        /// <summary>
+        /// Populates the form fields with data from the specified <see cref="Prefab"/> instance.
+        /// </summary>
+        /// <remarks>This method updates various form controls, such as combo boxes, text boxes, and
+        /// checkboxes,  based on the properties of the provided <see cref="Prefab"/> object.  Only non-null properties
+        /// of the <paramref name="prefab"/> object are applied to the form.</remarks>
+        /// <param name="prefab">The <see cref="Prefab"/> instance containing the data to populate the form.  Null or missing values in the
+        /// <paramref name="prefab"/> object will leave the corresponding form fields unchanged.</param>
         private void EntryFormData(Prefab prefab)
         {
             if (prefab.ThisMediaIs != null)
@@ -1178,6 +1356,14 @@ namespace YTA
                 TickListBoxes(fboxPlaylists, prefab.ListsIds);
             }
         }
+        /// <summary>
+        /// Populates the entry form fields with data from the specified <see cref="Prefab"/> object.
+        /// </summary>
+        /// <remarks>This method updates various form controls, such as text boxes, combo boxes, and
+        /// checkboxes, to reflect the values provided in the <paramref name="prefab"/> object. Default values are
+        /// applied for fields where the corresponding <paramref name="prefab"/> property is null.</remarks>
+        /// <param name="prefab">The <see cref="Prefab"/> object containing the data to populate the form fields. If a property of the
+        /// <paramref name="prefab"/> is null, a default value will be used where applicable.</param>
         private void EntryFormDataPFEdit(Prefab prefab)
         {
             if (prefab.PrefabName != null)
@@ -1229,7 +1415,19 @@ namespace YTA
                 TickListBoxes(fboxLists_PF, prefab.ListsIds);
             }
         }
-
+        /// <summary>
+        /// Updates the checked state of <see cref="CheckBox"/> controls within the specified <see
+        /// cref="FlowLayoutPanel"/> based on a comma-separated list of playlist IDs.
+        /// </summary>
+        /// <remarks>This method assumes that the <see cref="CheckBox.Tag"/> property is of type
+        /// <c>YTPlaylist</c> and that the <c>YTPlaylist</c> object contains a valid <c>ListID</c>. If these assumptions
+        /// are not met, the behavior is undefined.</remarks>
+        /// <param name="panel">The <see cref="FlowLayoutPanel"/> containing the controls to update. Each control is expected to contain
+        /// child <see cref="CheckBox"/> controls with a <see cref="Tag"/> property of type <c>YTPlaylist</c>.</param>
+        /// <param name="listsIds">A comma-separated string of playlist IDs. Each ID corresponds to a <see cref="YTPlaylist.ListID"/>
+        /// associated with a <see cref="CheckBox"/>. If the ID is present in this string, the corresponding <see
+        /// cref="CheckBox"/> will be checked; otherwise, it will be unchecked. Can be null or empty, in which case all
+        /// checkboxes will be unchecked.</param>
         private void TickListBoxes(FlowLayoutPanel panel, string listsIds)
         {
             //full clanker code bcs am slow
@@ -1252,7 +1450,14 @@ namespace YTA
                 }
             }
         }
-
+        /// <summary>
+        /// Handles the event triggered when the selected index of the prefab combo box changes.
+        /// </summary>
+        /// <remarks>This method updates the currently selected prefab based on the new selection in the
+        /// combo box. If the selection is empty or invalid, the method resets the current prefab state. Displays an
+        /// error message if the selected prefab cannot be retrieved.</remarks>
+        /// <param name="sender">The source of the event, typically the combo box.</param>
+        /// <param name="e">An <see cref="EventArgs"/> instance containing the event data.</param>
         private void cboxWhichPrefab_PF_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_loadingPrefabs == true || cboxWhichPrefab_PF.SelectedValue == null)
@@ -1278,7 +1483,15 @@ namespace YTA
                 EntryFormDataPFEdit(prefab);
             }
         }
-
+        /// <summary>
+        /// Handles the click event for the Delete Prefab button. Prompts the user for confirmation before deleting the
+        /// currently selected prefab.
+        /// </summary>
+        /// <remarks>If no prefab is currently selected, an informational message is displayed to the
+        /// user. If a prefab is selected, the user is prompted with a confirmation dialog. Upon confirmation, the
+        /// selected prefab is deleted, and the list of prefabs is reloaded.</remarks>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The event data.</param>
         private void btnDeletePrefab_Click(object sender, EventArgs e)
         {
             if (_currentlyEditingPrefabID == null)
@@ -1306,7 +1519,12 @@ namespace YTA
             LoadPrefabs();
             ClearPrefabFields();
         }
-
+        /// <summary>
+        /// Resets all fields in the prefab editing form to their default values.
+        /// </summary>
+        /// <remarks>This method clears text fields, resets combo box selections to their first item, 
+        /// unchecks all checkboxes, and removes any specific prefab ID currently being edited. It ensures the form is
+        /// in a clean state, ready for new input.</remarks>
         private void ClearPrefabFields()
         {
             _currentlyEditingPrefabID = null;
@@ -1344,6 +1562,34 @@ namespace YTA
                         tick.Checked = false;
                     }
                 }
+            }
+        }
+
+        private void tickBubbles_CheckedChanged(object sender, EventArgs e)
+        {
+            if (tickBubbles.Checked)
+            {
+                tickBubbles.Text = "Messages from tray";
+                _OSMSGEnable = true;
+            }
+            else
+            {
+                tickBubbles.Text = "Silenced";
+                _OSMSGEnable = false;
+            }
+        }
+
+        private void tickReminders_CheckedChanged(object sender, EventArgs e)
+        {
+            if (tickReminders.Checked)
+            {
+                tickReminders.Text = "Will remind after upload.";
+                _reminders = true;
+            }
+            else
+            {
+                tickReminders.Text = "Reminders off.";
+                _reminders = false;
             }
         }
     }

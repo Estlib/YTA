@@ -131,7 +131,7 @@ namespace YTA
             label7 = new Label();
             groupBox1 = new GroupBox();
             label16 = new Label();
-            checkBox1 = new CheckBox();
+            tickReminders = new CheckBox();
             button3 = new Button();
             button2 = new Button();
             label14 = new Label();
@@ -140,7 +140,7 @@ namespace YTA
             checkBox3 = new CheckBox();
             button1 = new Button();
             label12 = new Label();
-            checkBox2 = new CheckBox();
+            tickBubbles = new CheckBox();
             label6 = new Label();
             tickerIntervalSetting = new NumericUpDown();
             label8 = new Label();
@@ -234,7 +234,7 @@ namespace YTA
             label15.Name = "label15";
             label15.Size = new Size(79, 15);
             label15.TabIndex = 1;
-            label15.Text = "Version: V1.03";
+            label15.Text = "Version: V1.04";
             // 
             // textBox1
             // 
@@ -245,7 +245,6 @@ namespace YTA
             textBox1.Size = new Size(294, 280);
             textBox1.TabIndex = 0;
             textBox1.Text = resources.GetString("textBox1.Text");
-            textBox1.TextChanged += textBox1_TextChanged;
             // 
             // loggedInInfo
             // 
@@ -500,7 +499,6 @@ namespace YTA
             cboxCategory.Name = "cboxCategory";
             cboxCategory.Size = new Size(212, 23);
             cboxCategory.TabIndex = 16;
-            cboxCategory.SelectedIndexChanged += cboxCategory_SelectedIndexChanged;
             // 
             // btnAddEntry
             // 
@@ -570,7 +568,6 @@ namespace YTA
             label2.Size = new Size(71, 15);
             label2.TabIndex = 8;
             label2.Text = "Category id:";
-            label2.Click += label2_Click;
             // 
             // tboxTags
             // 
@@ -592,7 +589,6 @@ namespace YTA
             tboxDescription.ScrollBars = ScrollBars.Vertical;
             tboxDescription.Size = new Size(762, 146);
             tboxDescription.TabIndex = 6;
-            tboxDescription.TextChanged += tboxDescription_TextChanged;
             // 
             // tboxTitle
             // 
@@ -637,7 +633,6 @@ namespace YTA
             tboxVideopath.PlaceholderText = "Video location on disk";
             tboxVideopath.Size = new Size(192, 23);
             tboxVideopath.TabIndex = 1;
-            tboxVideopath.TextChanged += tboxVideopath_TextChanged;
             // 
             // cboxMediaType
             // 
@@ -1060,12 +1055,11 @@ namespace YTA
             label7.Size = new Size(181, 15);
             label7.TabIndex = 2;
             label7.Text = "Next upload cycle happening in: ";
-            label7.Click += label7_Click;
             // 
             // groupBox1
             // 
             groupBox1.Controls.Add(label16);
-            groupBox1.Controls.Add(checkBox1);
+            groupBox1.Controls.Add(tickReminders);
             groupBox1.Controls.Add(button3);
             groupBox1.Controls.Add(button2);
             groupBox1.Controls.Add(label14);
@@ -1074,7 +1068,7 @@ namespace YTA
             groupBox1.Controls.Add(checkBox3);
             groupBox1.Controls.Add(button1);
             groupBox1.Controls.Add(label12);
-            groupBox1.Controls.Add(checkBox2);
+            groupBox1.Controls.Add(tickBubbles);
             groupBox1.Controls.Add(label6);
             groupBox1.Controls.Add(tickerIntervalSetting);
             groupBox1.Controls.Add(label8);
@@ -1091,20 +1085,20 @@ namespace YTA
             label16.AutoSize = true;
             label16.Location = new Point(6, 174);
             label16.Name = "label16";
-            label16.Size = new Size(150, 15);
+            label16.Size = new Size(223, 15);
             label16.TabIndex = 15;
-            label16.Text = "Remind to edit end screens";
+            label16.Text = "Reminders for unimplementable features";
             // 
-            // checkBox1
+            // tickReminders
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Enabled = false;
-            checkBox1.Location = new Point(308, 173);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(72, 19);
-            checkBox1.TabIndex = 16;
-            checkBox1.Text = "UNREAD";
-            checkBox1.UseVisualStyleBackColor = true;
+            tickReminders.AutoSize = true;
+            tickReminders.Location = new Point(308, 173);
+            tickReminders.Name = "tickReminders";
+            tickReminders.Size = new Size(72, 19);
+            tickReminders.TabIndex = 16;
+            tickReminders.Text = "UNREAD";
+            tickReminders.UseVisualStyleBackColor = true;
+            tickReminders.CheckedChanged += tickReminders_CheckedChanged;
             // 
             // button3
             // 
@@ -1115,7 +1109,6 @@ namespace YTA
             button3.TabIndex = 14;
             button3.Text = "Load settings";
             button3.UseVisualStyleBackColor = true;
-            button3.Click += button3_Click;
             // 
             // button2
             // 
@@ -1186,16 +1179,16 @@ namespace YTA
             label12.TabIndex = 6;
             label12.Text = "Enable/Disable OS notifications";
             // 
-            // checkBox2
+            // tickBubbles
             // 
-            checkBox2.AutoSize = true;
-            checkBox2.Enabled = false;
-            checkBox2.Location = new Point(308, 70);
-            checkBox2.Name = "checkBox2";
-            checkBox2.Size = new Size(72, 19);
-            checkBox2.TabIndex = 7;
-            checkBox2.Text = "UNREAD";
-            checkBox2.UseVisualStyleBackColor = true;
+            tickBubbles.AutoSize = true;
+            tickBubbles.Location = new Point(308, 70);
+            tickBubbles.Name = "tickBubbles";
+            tickBubbles.Size = new Size(72, 19);
+            tickBubbles.TabIndex = 7;
+            tickBubbles.Text = "UNREAD";
+            tickBubbles.UseVisualStyleBackColor = true;
+            tickBubbles.CheckedChanged += tickBubbles_CheckedChanged;
             // 
             // label6
             // 
@@ -1205,7 +1198,6 @@ namespace YTA
             label6.Size = new Size(302, 15);
             label6.TabIndex = 0;
             label6.Text = "Check for content to be uploaded after every X minutes:";
-            label6.Click += label6_Click;
             // 
             // tickerIntervalSetting
             // 
@@ -1274,7 +1266,6 @@ namespace YTA
             richTextBox1.Size = new Size(762, 392);
             richTextBox1.TabIndex = 0;
             richTextBox1.Text = resources.GetString("richTextBox1.Text");
-            richTextBox1.TextChanged += richTextBox1_TextChanged;
             // 
             // uploadTicker
             // 
@@ -1299,7 +1290,6 @@ namespace YTA
             SizeGripStyle = SizeGripStyle.Hide;
             Text = "YTA - Youtube Transfer Assistant";
             FormClosing += Form1_FormClosing;
-            Load += Form1_Load;
             Resize += Form1_Resize;
             tabControl1.ResumeLayout(false);
             loginTab.ResumeLayout(false);
@@ -1392,7 +1382,7 @@ namespace YTA
         private TextBox tboxHowManyUploaded;
         private Button button1;
         private Label label12;
-        private CheckBox checkBox2;
+        private CheckBox tickBubbles;
         private Label label13;
         private CheckBox checkBox3;
         private Label label14;
@@ -1420,7 +1410,7 @@ namespace YTA
         private TabPage managePrefabTab;
         private RichTextBox richTextBox2;
         private Label label16;
-        private CheckBox checkBox1;
+        private CheckBox tickReminders;
         private ComboBox cboxPrivacyType_PF;
         private ComboBox cboxMediaType_PF;
         private Button btnUpdatePrefab;
